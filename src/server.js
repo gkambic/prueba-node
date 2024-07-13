@@ -73,6 +73,8 @@ app.get("/rest/getAllUsers", (req, res) => {
     res.send(userData)
    });
 
+   app.use(require('./routes'));
+
 app.listen(PORT, () => {
   console.log("Server running");
 });
