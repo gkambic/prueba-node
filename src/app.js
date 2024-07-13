@@ -2,13 +2,20 @@ import express from "express";
 import path from "path";
 import morgan from "morgan";
 import routes from "./routes/index.js";
+import passport from "passport";
+import session from "express-session";
+import expressMySQLSession from "express-mysql-session";
+import { promiseConnectFlash } from "async-connect-flash";
 
+import { SECRET, database } from "./config.js";
 import config from "./config.js";
 import {fileURLToPath} from "url";
+import { pool } from "./database.js";
+import "./lib/passport.js";
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
+const MySQLStore = expressMySQLSession(session);
 // Settings
 app.set("port", config.PORT);
 app.set("views", path.resolve(__dirname, "views"));
@@ -25,6 +32,20 @@ app.use((req, res, next) => {
   next();
 });
 
+
+console.log(database);
+app.use(
+  session({
+    secret: SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: new MySQLStore({}, pool),
+  })
+);
+
+app.use(promiseConnectFlash());
+app.use(passport.initialize());
+app.use(passport.session());
 // Routes
 app.use(routes);
 

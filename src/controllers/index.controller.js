@@ -11,6 +11,8 @@ export const renderAboutPage = (req, res) => res.render("about", config);
 
 export const renderNewEntryPage = (req, res) => res.render("new-entry");
 
+export const renderTablePage = (req, res) => res.render("table");
+
 export const createNewEntry = (req, res) => {
   const { title, author, image, description } = req.body;
 
