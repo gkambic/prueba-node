@@ -8,7 +8,7 @@ const app = express();
 
 
 //settings
-app.set('port', process.env.PORT || 4000);
+app.set('port', process.env.PORT || 8080);
 app.set('views', path.join(__dirname, 'views'));
 app.engine('.hbs', engine({
     defaultLayout: 'main',
@@ -41,6 +41,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Starting the server
 
-app.listen(app.get('port'), () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${app.get('port')}`);
 });
