@@ -1,8 +1,23 @@
-const express = require('express');
-const router = express.Router();
+import { Router } from "express";
 
-router.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+import {
+  renderAboutPage,
+  renderIndexPage,
+  renderNewEntryPage,
+  createNewEntry,
+  deleteBook,
+} from "../controllers/index.controller.js";
 
-module.exports = router;
+const router = Router();
+
+router.get("/", renderIndexPage);
+
+router.get("/about", renderAboutPage);
+
+router.get("/new-entry", renderNewEntryPage);
+
+router.post("/new-entry", createNewEntry);
+
+router.get("/delete/:id", deleteBook);
+
+export default router;

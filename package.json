@@ -1,28 +1,21 @@
 {
-    "name": "graphql",
-    "version": "1.0.0",
-    "description": "",
-    "main": "src/server.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "express": "^4.18.2",
-        "express-graphql": "^0.12.0",
-        "graphql": "^15.8.0",
-        "bcryptjs": "^2.4.3",
-        "connect-flash": "^0.1.1",
-        "express-handlebars": "^7.1.3",
-        "express-mysql-session": "^3.0.3",
-        "express-session": "^1.18.0",
-        "express-validator": "^7.1.0",
-        "morgan": "^1.10.0",
-        "mysql": "^2.18.1",
-        "passport": "^0.7.0",
-        "passport-local": "^1.0.0",
-        "timeago.js": "^4.0.2"
-        }
+  "name": "libro_notas_nodejs",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js --ignore src/books.json"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
 }

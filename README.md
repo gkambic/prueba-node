@@ -1,43 +1,54 @@
-# Nodejs app with rest and graphql example
+# Express Books
 
-An example of GraphQL queries/mutations with Node and Express js.
+Express Books is Web Application to save a list of your favorite books. All data are store in a Json file.
 
-With GraphQL, clients can specify exactly what data they need, and the server responds with only that data, reducing the amount of data transferred over the network.
+# ScreenShoot
 
-Rest API Endpoint for get all users: http://localhost:5000/rest/getAllUsers
+![Express Books](docs/screenshot.png)
 
-GraphQL Endpont: http://localhost:5000/graphql
+# Installation
 
-Query for below scenarios: 
+```shell
+git clone https://github.com/FaztTech/books-express
+npm install
+npm run build
+npm start
+```
 
-1. Get All Users with query operation
+# Environment Variables
 
-query{
-  getAllUsers{
-    id
-    email
-  }
-}
+- `PORT`, this is the http port of the server. by default is `5000`.
+- `APPID` - (optional), this is an unique ID for the application to identify in a load balancer
 
-2. Get single user details
+Also you can create a .env file with the environment variables mentioned above.
 
-query{
-  findUserById(id:1000){
-    id
-    firstName
-    lastName
-    email
-  }
-}
+# Docker
 
-3. Create User with mutation operation
+```shell
+docker build -t express-books .
+```
 
-mutation{
-  createUser(firstName:"sachin",lastName:"purohit",email:"sachin@sachin.com",password:"password"){
-    id
-    firstName
-    lastName
-    email
-  }
-}
+```shell
+docker run -p 80:5000 express-books .
+```
 
+then visit: `http://localhost`
+
+# Video Tutorial
+
+- [Youtube (Spanish)](https://youtu.be/IRqaH_jhyT8)
+
+# Considerations
+
+- Make sure nodemon ignores the file `src/books.json`.
+
+## Reference
+
+- https://babeljs.io/docs/en/babel-plugin-transform-runtime
+
+### Todo
+
+- [ ] Add user authentication
+- [ ] Allow to download the json data
+- [ ] Publish a docker container image on dockerhub
+- [x] Change to dark theme
