@@ -5,75 +5,43 @@ const userData = require("../MOCK_DATA.json");
 const graphql = require("graphql")
 const { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLID, GraphQLInt, GraphQLString } = graphql
 const { graphqlHTTP } = require("express-graphql")
+const { engine } = require('express-handlebars');
+const path = require('path');
 
-const UserType = new GraphQLObjectType({
-    name: "User",
-    fields: () => ({
-        id: { type: GraphQLInt },
-        firstName: { type: GraphQLString },
-        lastName: { type: GraphQLString },
-        email: { type: GraphQLString },
-        password: { type: GraphQLString },
-    })
-})
 
-const RootQuery = new GraphQLObjectType({
-    name: "RootQueryType",
-    fields: {
-        getAllUsers: {
-            type: new GraphQLList(UserType),
-            args: { id: {type: GraphQLInt}},
-            resolve(parent, args) {
-                return userData;
-            }
-        },
-        findUserById: {
-            type: UserType,
-            description: "fetch single user",
-            args: { id: {type: GraphQLInt}},
-            resolve(parent, args) {
-                return userData.find((a) => a.id == args.id);
-            }
-        }
-    }
-})
-const Mutation = new GraphQLObjectType({
-    name: "Mutation",
-    fields: {
-        createUser: {
-            type: UserType,
-            args: {
-                firstName: {type: GraphQLString},
-                lastName: { type: GraphQLString },
-                email: { type: GraphQLString },
-                password: { type: GraphQLString },
-            },
-            resolve(parent, args) {
-                userData.push({
-                    id: userData.length + 1,
-                    firstName: args.firstName,
-                    lastName: args.lastName,
-                    email: args.email,
-                    password: args.password
-                })
-                return args
-            }
-        }
-    }
-})
+//settings
+app.set('port', process.env.PORT || 4000);
+app.set('views', path.join(__dirname, 'views'));
+app.engine('.hbs', engine({
+    defaultLayout: 'main',
+    extname: '.hbs',
+    layoutsDir: path.join(app.get('views'), 'layouts'),
+    partialsDir: path.join(app.get('views'), 'partials'),
+    helpers: require('./lib/handlebars')
+}));
 
-const schema = new GraphQLSchema({query: RootQuery, mutation: Mutation})
-app.use("/graphql", graphqlHTTP({
-    schema,
-    graphiql: true,
-  })
-);
+app.set('view engine','.hbs');
+
+//Middlewares
+app.use(morgan('dev'));
+app.use(express.urlencoded({extended: false}));
+app.use(express.json());
+
+//Global Variables
+app.use((req, res, next) => {
+    next();
+    
+    });
+
+//Routes
+app.use(require('./routes'));
+app.use(require('./routes/authentication'));
+app.use('/links', require('./routes/links'));
 
 app.get("/rest/getAllUsers", (req, res) => {
     res.send(userData)
    });
 
-   app.use(require('./routes'));
 
 app.listen(PORT, () => {
   console.log("Server running");
