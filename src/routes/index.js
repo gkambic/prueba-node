@@ -1,30 +1,23 @@
 import { Router } from "express";
+import auth from "./auth.routes.js";
+import index from "./index.routes.js";
+import videos from "./video.routes.js";
 
-import {
-  renderAboutPage,
-  renderIndexPage,
-  renderNewEntryPage,
-  createNewEntry,
-  renderTablePage,
-  renderLinks,
-  deleteBook,
-} from "../controllers/index.controller.js";
+import cupones from "./cupon.routes.js";
+import examenes from "./examen.routes.js";
+import insignias from "./insignia.routes.js";
+import usuario from "./usuario.routes.js";
 
 const router = Router();
 
-router.get("/", renderIndexPage);
+router.use(index);
+router.use(auth);
+router.use(videos);
 
-router.get("/about", renderAboutPage);
-
-router.get("/new-entry", renderNewEntryPage);
-
-router.post("/new-entry", createNewEntry);
-
-router.get("/delete/:id", deleteBook);
-
-router.get("/table", renderTablePage);
-
-router.get("/list", renderLinks);
+router.use(cupones);
+router.use(examenes);
+router.use(insignias);
+router.use(usuario);
 
 
 export default router;

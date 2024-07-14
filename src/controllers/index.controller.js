@@ -8,7 +8,7 @@ let books = JSON.parse(json_books);
 
 export const renderLinks = async (req, res) => {
   const [rows] = await pool.query("SELECT * FROM links");
-  res.render("list", { links: rows });
+  res.render("list", { datos: rows });
 };
 
 export const renderIndexPage = (req, res) => res.render("index", { books });
@@ -17,7 +17,10 @@ export const renderAboutPage = (req, res) => res.render("about", config);
 
 export const renderNewEntryPage = (req, res) => res.render("new-entry");
 
-export const renderTablePage = (req, res) => res.render("table");
+export const renderTablePage = async (req, res) => {
+  const [rows] = await pool.query("SELECT * FROM links");
+  res.render("table", { datos: rows });
+};
 
 export const createNewEntry = (req, res) => {
   const { title, author, image, description } = req.body;
