@@ -6,6 +6,7 @@ import {
   renderNewEntryPage,
   createNewEntry,
   renderTablePage,
+  renderLinks,
   deleteBook,
 } from "../controllers/index.controller.js";
 
@@ -22,6 +23,8 @@ router.post("/new-entry", createNewEntry);
 router.get("/delete/:id", deleteBook);
 
 router.get("/table", renderTablePage);
+
+router.get("/list", renderLinks);
 
 
 export default router;

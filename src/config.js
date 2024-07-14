@@ -2,10 +2,10 @@ import { config } from "dotenv";
 config();
 
 export const database = {
-  host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'c1720260_edc'
+  host: 'expertosdelcemento-dev-server.mysql.database.azure.com',
+        user: 'expertosdelcementoDev',
+        password: 'DataBase24!',
+        database: 'expertosdelcemento-dev-database'
 };
 
 export const SECRET = process.env.SECRET || 'some secret key';

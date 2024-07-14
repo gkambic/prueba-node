@@ -1,9 +1,15 @@
 import config from "../config.js";
 import fs from "fs";
 import { v4 } from "uuid";
+import { pool } from "../database.js";
 
 const json_books = fs.readFileSync("src/books.json", "utf-8");
 let books = JSON.parse(json_books);
+
+export const renderLinks = async (req, res) => {
+  const [rows] = await pool.query("SELECT * FROM links");
+  res.render("list", { links: rows });
+};
 
 export const renderIndexPage = (req, res) => res.render("index", { books });
 
