@@ -11,7 +11,7 @@ export const renderLinks = async (req, res) => {
   res.render("list", { datos: rows });
 };
 
-export const renderIndexPage = (req, res) => res.render("index", { books });
+export const renderIndexPage = (req, res) => res.render("index");
 
 export const renderAboutPage = (req, res) => res.render("about", config);
 
