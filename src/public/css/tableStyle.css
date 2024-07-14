@@ -1,0 +1,30 @@
+h1 
+    {
+      margin: 20px auto;
+      width: 90%;
+    }
+    .table-container {
+      width: 90%;
+      margin: 20px auto; /* Centra el contenedor y le da margen */
+      overflow-x: auto;
+      border: 1px solid #ccc; /* Borde para un mejor contraste */
+      border-radius: 8px; /* Bordes redondeados */
+      box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sombra ligera */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    @media (max-width: 600px) {
+      th, td {
+        font-size: 12px;
+      }
+    }

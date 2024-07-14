@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <%- include('../partials/header') %>
-  <title>Consulta de Cupones</title>
+  <title>Consulta de Examenes</title>
   <link rel="stylesheet" href="css/tableStyle.css">
 </head>
 <body>
   <%- include('../partials/navigation') %>
   <h1>
-    Cupones
+    Examenes
   </h1>
   <div class="table-container">
     <table>
@@ -27,6 +27,10 @@
             <% }); %>
           </tr>
         <% }); %>
+        <td>
+            <a href="/edit" class="btn btn-outline-info">editar</a>
+            <a href="/delete" class="btn btn-outline-danger">borrar</a>
+        </td>
       </tbody>
     </table>
   </div>

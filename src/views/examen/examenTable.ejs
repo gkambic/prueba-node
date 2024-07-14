@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <%- include('../partials/header') %>
-    <title>Table</title>
+  <title>Consulta de Examenes</title>
+  <link rel="stylesheet" href="css/tableStyle.css">
 </head>
-
 <body>
-
   <%- include('../partials/navigation') %>
-  <table>
-    <thead>
-      <tr>
-        <% Object.keys(datos[0]).forEach(function(key) { %>
-          <th><%= key %></th>
-        <% }); %>
-      </tr>
-    </thead>
-    <tbody>
-      <% datos.forEach(function(dato) { %>
+  <h1>
+    Examenes
+  </h1>
+  <div class="table-container">
+    <table>
+      <thead>
         <tr>
-          <% Object.values(dato).forEach(function(value) { %>
-            <td><%= value %></td>
+          <% Object.keys(datos[0]).forEach(function(key) { %>
+            <th><%= key %></th>
           <% }); %>
         </tr>
-      <% }); %>
-    </tbody>
-  </table>
-  
+      </thead>
+      <tbody>
+        <% datos.forEach(function(dato) { %>
+          <tr>
+            <% Object.values(dato).forEach(function(value) { %>
+              <td><%= value %></td>
+              
+            <% }); %>
+            <td>
+              <a href="/edit" class="btn btn-outline-info">editar</a>
+              <a href="/delete" class="btn btn-outline-danger">borrar</a>
+          </td>
+          </tr>
+        <% }); %>
+        
+      </tbody>
+    </table>
+  </div>
 
-    <%- include('../partials/footer')%>
+  <%- include('../partials/footer') %>
 </body>
-
 </html>
