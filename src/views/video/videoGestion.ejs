@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/header') %>
+  <title>Gestion de Videos</title>
+  <link rel="stylesheet" href="css/tableStyle.css">
+</head>
+<body>
+  <%- include('../partials/navigation') %>
+  <h1>
+    Videos
+  </h1>
+
+  <a href="/createVideo" class="btn btn-outline-primary mt-4 a-margin">Nuevo</a>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <% Object.keys(datos[0]).forEach(function(key) { %>
+            <% if (key === 'id') { %>
+              <th class="hidden-column"><%= key %></th>
+            <% } else { %>
+              <th><%= key %></th>
+            <% } %>
+          <% }); %>
+        </tr>
+      </thead>
+      <tbody>
+        <% datos.forEach(function(dato) { %>
+          <tr>
+            <% Object.keys(dato).forEach(function(key) { %>
+              <% if (key === 'id') { %>
+                <td class="hidden-column"><%= dato[key] %></td>
+              <% } else { %>
+                <td><%= dato[key] %></td>
+              <% } %>
+            <% }); %>
+            <td>
+              <a href="/editVideo/<%= dato.id %>" class="btn btn-outline-info">editar</a>
+              <a href="/deleteVideo/<%= dato.id %>" class="btn btn-outline-danger">borrar</a>
+            </td>
+          </tr>
+        <% }); %>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

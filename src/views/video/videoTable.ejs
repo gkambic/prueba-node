@@ -4,27 +4,60 @@
   <%- include('../partials/header') %>
   <title>Consulta de Videos</title>
   <link rel="stylesheet" href="css/tableStyle.css">
+  <link rel="stylesheet" href="css/filterStyle.css">
 </head>
 <body>
   <%- include('../partials/navigation') %>
   <h1>
     Videos
   </h1>
+
+  <div class="filters-container">
+    <form id="filters-form" method="POST" action="/examenTable" class="row">
+      <% let counter = 0; %>
+      <% Object.keys(datos[0]).forEach(function(key) { %>
+        <% if (key !== 'id') { %>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>
+              <input type="text" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="Search <%= key %>" value="<%= filtros[key] || '' %>">
+            </div>
+          </div>
+          <% counter++; %>
+          <% if (counter % 2 === 0) { %>
+            <div class="w-100"></div>
+          <% } %>
+        <% } %>
+      <% }); %>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <button type="button" class="btn btn-secondary" onclick="limpiarFiltros()">Limpiar Filtros</button>
+      </div>
+    </form>
+  </div>
+
   <div class="table-container">
-    
     <table>
       <thead>
         <tr>
           <% Object.keys(datos[0]).forEach(function(key) { %>
-            <th><%= key %></th>
+            <% if (key === 'id') { %>
+              <th class="hidden-column"><%= key %></th>
+            <% } else { %>
+              <th><%= key %></th>
+            <% } %>
           <% }); %>
         </tr>
       </thead>
       <tbody>
         <% datos.forEach(function(dato) { %>
           <tr>
-            <% Object.values(dato).forEach(function(value) { %>
-              <td><%= value %></td>
+            <% Object.keys(dato).forEach(function(key) { %>
+              <% if (key === 'id') { %>
+                <td class="hidden-column"><%= dato[key] %></td>
+              <% } else { %>
+                <td><%= dato[key] %></td>
+              <% } %>
             <% }); %>
           </tr>
         <% }); %>
@@ -33,5 +66,11 @@
   </div>
 
   <%- include('../partials/footer') %>
+  <script>
+    function limpiarFiltros() {
+      document.querySelectorAll('#filters-form input').forEach(input => input.value = '');
+      document.getElementById('filters-form').submit();
+    }
+  </script>
 </body>
 </html>

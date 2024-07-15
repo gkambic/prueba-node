@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/header') %>
+    <title>Nuevo Cupon</title>
+</head>
+
+<body>
+
+  <%- include('../partials/navigation') %>
+    <div class="container p-4">
+
+      <div class="card border-secondary">
+        <div class="card-header">Nuevo Registro</div>
+        <div class="card-body bg-dark text-light">
+
+          <form method="POST" action="/createCupon" >
+
+            <div class="mb-3">
+              <label for="title">Codigo</label>
+              <input name="codigo" type="text" class="form-control rounded-0" placeholder="Entry a Name" autofocus
+                required>
+            </div>
+
+            <div class="mb-3">
+              <label for="title">Vencimiento</label>
+              <input name="vencimiento" type="datetime-local" class="form-control rounded-0" placeholder="url" autofocus required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" tabindex="5">Guardar</button>
+            <a href="/cuponTable" class="btn btn-secondary">Cancelar</a>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <%- include('../partials/footer')%>
+</body>
+
+</html>

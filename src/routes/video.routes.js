@@ -3,17 +3,35 @@ import { Router } from "express";
 import {
     renderVideos,
     renderTableVideoPage,
-    deleteVideo
+    deleteVideo,
+    renderTableVideoGestion,
+    renderCreateVideoPage,
+    createVideo,
+    renderEditVideo,
+    editVideo
 } from "../controllers/video.controller.js";
 
 const router = Router();
 
 
-router.get("/delete/:id", deleteVideo);
+router.get("/deleteVideo/:id", deleteVideo);
 
 router.get("/videoTable", renderTableVideoPage);
 
+router.post("/videoTable", renderTableVideoPage);
+
+router.get("/videoGestion", renderTableVideoGestion);
+
 router.get("/videoList", renderVideos);
+
+router.get("/createVideo", renderCreateVideoPage);
+
+router.post("/createVideo", createVideo);
+
+router.get("/editVideo/:id", renderEditVideo);
+
+router.post("/editVideo", editVideo)
+
 
 
 export default router;

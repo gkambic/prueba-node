@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/header') %>
+    <title>Nuevo Video</title>
+</head>
+
+<body>
+
+  <%- include('../partials/navigation') %>
+    <div class="container p-4">
+
+      <div class="card border-secondary">
+        <div class="card-header">Nuevo Registro</div>
+        <div class="card-body bg-dark text-light">
+
+          <form method="POST" action="/createVideo" >
+
+            <div class="mb-3">
+              <label for="title">Titulo</label>
+              <input name="titulo" type="text" class="form-control rounded-0" placeholder="Entry a Name" autofocus
+                required>
+            </div>
+
+            <div class="mb-3">
+              <label for="title">Url</label>
+              <input name="url" type="text" class="form-control rounded-0" placeholder="url" autofocus required>
+            </div>
+
+            <div class="mb-3">
+              <label for="title">Descripcion</label>
+              <input name="descripcion" type="text" class="form-control rounded-0" placeholder="Descripcion" autofocus required>
+            </div>
+
+            <div class="mb-3">
+              <label for="title">Imagen</label>
+              <input name="imagen" type="text" class="form-control rounded-0" placeholder="Imagen" autofocus>
+            </div>
+
+            <div class="mb-3">
+              <label for="title">Watch_id</label>
+              <input name="watch_id" type="text" class="form-control rounded-0" placeholder="watch_id" autofocus required>
+            </div>
+
+            <div class="mb-3">
+              <label for="examen">Examen</label>
+              <select name="examen_id" class="form-select" aria-label="Default select example">
+                  <option selected></option>
+                  <% optionExamenes.forEach(function(option) { %>
+                  <option value="<%= option.id %>"><%= option.nombre %></option>
+                  <% }); %>
+              </select>
+          </div>
+            <button type="submit" class="btn btn-primary" tabindex="5">Guardar</button>
+            <a href="/videoTable" class="btn btn-secondary">Cancelar</a>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <%- include('../partials/footer')%>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/header') %>
+  <title>Editar Insignia</title>
+</head>
+<body>
+  <%- include('../partials/navigation') %>
+  <% if (datos) {%>
+  <div class="container p-4">
+    <div class="card border-secondary">
+      <div class="card-header">Editar Registro</div>
+      <div class="card-body bg-dark text-light">
+        <form method="POST" action="/editInsignia">
+          <input id="id" name = "id" value="<%= datos.id %>" hidden >
+          <div class="mb-3">
+            <label for="title">Nombre</label>
+            <input name="nombre" type="text" class="form-control rounded-0" placeholder="Entry a Name"  value="<%= datos.nombre %>" autofocus
+              required>
+          </div>
+
+          <div class="mb-3">
+            <label for="title">Descripcion</label>
+            <input name="descripcion" type="text" class="form-control rounded-0" placeholder="Descripcion" value="<%= datos.descripcion %>"  autofocus>
+          </div>
+
+          <div class="mb-3">
+            <label for="title">Imagen</label>
+            <input name="imagen" type="text" class="form-control rounded-0" placeholder="Imagen"  value="<%= datos.imagen_url %>"  autofocus required>
+          </div>
+          
+          <div class="mb-3">
+              <label for="examen">Examen</label>
+              <select name="examen_id" class="form-select" aria-label="Default select example" required>
+                  <option disabled></option>
+                  <% optionExamenes.forEach(function(option) { %>
+                    <option value="<%= option.id %>" <%= datos.examen_id == option.id ? 'selected' : '' %>><%= option.nombre %></option>
+                  <% }); %>
+              </select>
+          </div>
+          <button type="submit" class="btn btn-primary" tabindex="5">Guardar</button>
+          <a href="/insigniaGestion" class="btn btn-secondary">Cancelar</a>
+        </form>
+      </div>
+    </div>
+  </div>
+  <% } %>
+  <%- include('../partials/footer') %>
+</body>
+</html>

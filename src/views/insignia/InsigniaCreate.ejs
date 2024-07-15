@@ -3,7 +3,7 @@
 
 <head>
   <%- include('../partials/header') %>
-    <title>Nuevo Examen</title>
+    <title>Nueva Insignia</title>
 </head>
 
 <body>
@@ -15,7 +15,7 @@
         <div class="card-header">Nuevo Registro</div>
         <div class="card-body bg-dark text-light">
 
-          <form method="POST" action="/createExamen" >
+          <form method="POST" action="/createInsignia" >
 
             <div class="mb-3">
               <label for="title">Nombre</label>
@@ -24,30 +24,26 @@
             </div>
 
             <div class="mb-3">
-              <label for="title">Url</label>
-              <input name="url" type="text" class="form-control rounded-0" placeholder="url" autofocus required>
+              <label for="title">Descripcion</label>
+              <input name="descripcion" type="text" class="form-control rounded-0" placeholder="Descripcion" autofocus required>
             </div>
 
             <div class="mb-3">
-                <label for="category">Category</label>
-                <select name="categoria_id" class="form-select" aria-label="Default select example">
+              <label for="title">Imagen</label>
+              <input name="imagen" type="text" class="form-control rounded-0" placeholder="Imagen" autofocus required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="examen">Examen</label>
+                <select name="examen_id" class="form-select" aria-label="Default select example" required>
                     <option selected></option>
-                    <% optionsCategory.forEach(function(option) { %>
+                    <% optionExamenes.forEach(function(option) { %>
                     <option value="<%= option.id %>"><%= option.nombre %></option>
                     <% }); %>
                 </select>
             </div>
-            <div class="mb-3">
-                <label for="video">Video</label>
-                <select name="video_id" class="form-select" aria-label="Default select example">
-                    <option selected></option>
-                    <% optionVideos.forEach(function(option) { %>
-                    <option value="<%= option.id %>"><%= option.titulo %></option>
-                    <% }); %>
-                </select>
-            </div>
             <button type="submit" class="btn btn-primary" tabindex="5">Guardar</button>
-            <a href="/examenTable" class="btn btn-secondary">Cancelar</a>
+            <a href="/insigniaGestion" class="btn btn-secondary">Cancelar</a>
           </form>
         </div>
       </div>

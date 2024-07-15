@@ -3,7 +3,7 @@
 
 <head>
   <%- include('../partials/header') %>
-    <title>Nuevo Examen</title>
+    <title>Nuevo Usuario</title>
 </head>
 
 <body>
@@ -15,7 +15,7 @@
         <div class="card-header">Nuevo Registro</div>
         <div class="card-body bg-dark text-light">
 
-          <form method="POST" action="/createExamen" >
+          <form method="POST" action="Usuario" >
 
             <div class="mb-3">
               <label for="title">Nombre</label>
@@ -31,7 +31,7 @@
             <div class="mb-3">
                 <label for="category">Category</label>
                 <select name="categoria_id" class="form-select" aria-label="Default select example">
-                    <option selected></option>
+                    <option selected>Open this select menu</option>
                     <% optionsCategory.forEach(function(option) { %>
                     <option value="<%= option.id %>"><%= option.nombre %></option>
                     <% }); %>
@@ -40,14 +40,14 @@
             <div class="mb-3">
                 <label for="video">Video</label>
                 <select name="video_id" class="form-select" aria-label="Default select example">
-                    <option selected></option>
+                    <option selected>Open this select menu</option>
                     <% optionVideos.forEach(function(option) { %>
                     <option value="<%= option.id %>"><%= option.titulo %></option>
                     <% }); %>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary" tabindex="5">Guardar</button>
-            <a href="/examenTable" class="btn btn-secondary">Cancelar</a>
+            <a href="/usuarioTable" class="btn btn-secondary">Cancelar</a>
           </form>
         </div>
       </div>

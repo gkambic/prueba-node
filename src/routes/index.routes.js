@@ -19,12 +19,12 @@ router.get("/about", renderAboutPage);
 router.get("/new-entry", renderNewEntryPage);
 
 router.post("/new-entry", createNewEntry);
-
+/* 
 router.get("/delete/:id", deleteBook);
 
 router.get("/table", renderTablePage);
 
 router.get("/list", renderLinks);
-
+ */
 
 export default router;
