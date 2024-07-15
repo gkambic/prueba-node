@@ -7,7 +7,45 @@ export const renderVideos = async (req, res) => {
 };
 
 export const renderTableVideoPage = async (req, res) => {
-  const [rows] = await pool.query("select tv.id, tv.titulo, tv.url, tv.watch_id, tv.descripcion, tv.imagen, te.nombre as examen from tbl_videos tv LEFT JOIN tbl_examenes te on tv.examen_id = te.id ");
+  const {titulo, url, watch_id, descripcion, imagen, examen } = req.body;
+
+  let query = `select tv.id, tv.titulo, tv.url, tv.watch_id, tv.descripcion, tv.imagen, te.nombre as examen 
+  from tbl_videos tv LEFT JOIN tbl_examenes te on tv.examen_id = te.id
+  WHERE 1=1`;
+
+  let params = [];
+
+    if (titulo) {
+      query += ' AND tv.titulo LIKE ?';
+      params.push(`%${titulo}%`);
+    }
+
+    if (url) {
+      query += ' AND tv.url LIKE ?';
+      params.push(`%${url}%`);
+    }
+
+    if (watch_id) {
+      query += ' AND tv.watch_id LIKE ?';
+      params.push(`%${watch_id}%`);
+    }
+
+    if (descripcion) {
+      query += ' AND tv.descripcion LIKE ?';
+      params.push(`%${descripcion}%`);
+    }
+
+    if (imagen) {
+      query += ' AND tv.imagen LIKE ?';
+      params.push(`%${imagen}%`);
+    }
+
+    if (examen) {
+      query += ' AND te.nombre LIKE ?';
+      params.push(`%${examen}%`);
+    }
+
+  const [rows] = await pool.query(query, params);
   res.render("video/videoTable", { datos: rows , filtros: req.body });
 };
 

@@ -7,7 +7,18 @@ export const renderCupones = async (req, res) => {
 };
 
 export const renderTableCuponPage = async (req, res) => {
-  const [rows] = await pool.query("SELECT * FROM tbl_cupones");
+  const { codigo } = req.body;
+  let query ="SELECT * FROM tbl_cupones WHERE 1 = 1";
+
+  let params = [];
+
+    if (codigo) {
+      query += ' AND codigo LIKE ?';
+      params.push(`%${codigo}%`);
+    }
+
+    const [rows] = await pool.query(query, params);
+
   res.render("cupon/cuponTable", { datos: rows , filtros: req.body });
 };
 
@@ -20,7 +31,7 @@ export const deleteCupon = async (req, res) => {
 
   export const renderTableCuponGestion = async (req, res) => {
     const [rows] = await pool.query(
-      "SELECT * FROM tbl_cupones"
+      "SELECT * FROM tbl_cupones WHERE 1 = 1"
     );
     res.render("cupon/cuponGestion", { datos: rows });
   };

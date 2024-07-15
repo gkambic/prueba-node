@@ -7,12 +7,13 @@ export const renderExamenes = async (req, res) => {
 
 export const renderTableExamenPage = async (req, res) => {
   const { nombre, url, video, categoria } = req.body;
-
+console.log(req.body);
     let query = `
     SELECT te.id, te.nombre, te.url, tv.titulo AS video, tc.nombre AS categoria
     FROM tbl_examenes te
     LEFT JOIN tbl_videos tv ON te.id_video = tv.id
-    LEFT JOIN tbl_categorias tc ON te.categoria_id = tc.id`;
+    LEFT JOIN tbl_categorias tc ON te.categoria_id = tc.id
+    WHERE 1 = 1`;
     let params = [];
 
     if (nombre) {
@@ -24,13 +25,15 @@ export const renderTableExamenPage = async (req, res) => {
       params.push(`%${url}%`);
     }
     if (categoria) {
-      query += ' AND tc.nombre = ?';
-      params.push(categoria);
+      query += ' AND tc.nombre LIKE ?';
+      params.push(`%${categoria}%`);
     }
     if (video) {
-      query += ' AND tv.titulo = ?';
-      params.push(video);
+      query += ' AND tv.titulo LIKE ?';
+      params.push(`%${video}%`);
     }
+
+    console.log(query);
 
     const [rows] = await pool.query(query, params);
 

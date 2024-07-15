@@ -7,7 +7,36 @@ export const renderInsignias = async (req, res) => {
 };
 
 export const renderTableInsigniaPage = async (req, res) => {
-  const [rows] = await pool.query("select ti.id, ti.nombre, ti.descripcion, ti.imagen_url, te.nombre as examen from tbl_insignias ti LEFT JOIN tbl_examenes te on te.id = ti.examen_id ");
+
+  const { nombre, descripcion, imagen_url, examen } = req.body;
+
+  let query = ` select ti.id, ti.nombre, ti.descripcion, ti.imagen_url, te.nombre as examen 
+  from tbl_insignias ti LEFT JOIN tbl_examenes te on te.id = ti.examen_id WHERE 1=1`;
+
+  let params = [];
+
+    if (nombre) {
+      query += ' AND ti.nombre LIKE ?';
+      params.push(`%${nombre}%`);
+    }
+
+    if (descripcion) {
+      query += ' AND ti.descripcion LIKE ?';
+      params.push(`%${descripcion}%`);
+    }
+
+    if (imagen_url) {
+      query += ' AND ti.imagen_url LIKE ?';
+      params.push(`%${imagen_url}%`);
+    }
+
+    if (examen) {
+      query += ' AND te.nombre LIKE ?';
+      params.push(`%${examen}%`);
+    }
+
+    console.log(query);
+  const [rows] = await pool.query(query, params);
   res.render("insignia/insigniaTable", { datos: rows , filtros: req.body });
 };
 
