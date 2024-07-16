@@ -18,12 +18,21 @@
       <% let filterKeys = datos.length > 0 ? Object.keys(datos[0]) : Object.keys(filtros); %>
       <% filterKeys.forEach(function(key) { %>
         <% if (key !== 'id') { %>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>
-              <input type="text" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="Search <%= key %>" value="<%= filtros[key] || '' %>">
+          <% if (key === 'vencimiento') { %>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>
+                <input type="date" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="Search <%= key %>" value="<%= filtros[key] || '' %>">
+              </div>
             </div>
-          </div>
+          <% } else { %>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>
+                <input type="text" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="Search <%= key %>" value="<%= filtros[key] || '' %>">
+              </div>
+            </div>
+          <% } %>
           <% counter++; %>
           <% if (counter % 2 === 0) { %>
             <div class="w-100"></div>

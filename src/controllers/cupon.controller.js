@@ -1,5 +1,6 @@
 import { pool } from "../database.js";
 import ExcelJS  from "exceljs";
+import { formatDate } from "../lib/fechaHelper.js";
 
 export const renderCupones = async (req, res) => {
   const [rows] = await pool.query("SELECT * FROM tbl_cupones");
@@ -7,14 +8,21 @@ export const renderCupones = async (req, res) => {
 };
 
 export const renderTableCuponPage = async (req, res) => {
-  const { codigo } = req.body;
-  let query ="SELECT * FROM tbl_cupones WHERE 1 = 1";
+  const { codigo, vencimiento } = req.body;
+  let query ="SELECT id, codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento FROM tbl_cupones WHERE 1 = 1";
 
   let params = [];
 
     if (codigo) {
       query += ' AND codigo LIKE ?';
       params.push(`%${codigo}%`);
+    }
+
+    if(vencimiento) {
+      const formattedDate = formatDate(vencimiento);
+      console.log(formattedDate);
+      query += ` AND DATE_FORMAT(vencimiento, '%d-%m-%Y') = ?`;
+      params.push(formattedDate);
     }
 
     const [rows] = await pool.query(query, params);
@@ -31,7 +39,7 @@ export const deleteCupon = async (req, res) => {
 
   export const renderTableCuponGestion = async (req, res) => {
     const [rows] = await pool.query(
-      "SELECT * FROM tbl_cupones WHERE 1 = 1"
+      "SELECT id, codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento FROM tbl_cupones WHERE 1 = 1"
     );
     res.render("cupon/cuponGestion", { datos: rows });
   };
@@ -58,7 +66,7 @@ export const deleteCupon = async (req, res) => {
 
   export const editCupon = async (req, res) => {
     const {id, codigo, vencimiento } = req.body;
-    console.log("Este es el id", id);
+    
     await pool.query(
       "UPDATE tbl_cupones SET codigo = ?, vencimiento = ? WHERE id = ?",
       [codigo, vencimiento, id]
@@ -69,25 +77,32 @@ export const deleteCupon = async (req, res) => {
   
   export const renderEditCupon = async (req, res) => {
     const { id } = req.params;
-    const [result] = await pool.query("SELECT * FROM tbl_cupones WHERE id = ?", [
+    const [result] = await pool.query("SELECT id, codigo, DATE_FORMAT(vencimiento, '%Y-%m-%d') as vencimiento FROM tbl_cupones WHERE id = ?", [
       id,
     ]);
     const datos = result[0];
-  
+  console.log(datos);
     res.render("cupon/CuponEdit", {
       datos
     });
   };
 
   export const exportCupon = async (req, res) => {
-    const { codigo } = req.body;
-    let query ="SELECT codigo, vencimiento FROM tbl_cupones WHERE 1 = 1";
+    const { codigo, vencimiento } = req.body;
+    let query ="SELECT codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento FROM tbl_cupones WHERE 1 = 1";
 
     let params = [];
 
       if (codigo) {
         query += ' AND codigo LIKE ?';
         params.push(`%${codigo}%`);
+      }
+
+      if(vencimiento) {
+        const formattedDate = formatDate(vencimiento);
+        console.log(formattedDate);
+        query += ` AND DATE_FORMAT(vencimiento, '%d-%m-%Y') = ?`;
+        params.push(formattedDate);
       }
   
       console.log(query);
