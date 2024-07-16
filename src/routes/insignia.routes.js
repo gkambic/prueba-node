@@ -8,7 +8,8 @@ import {
     renderCreateInsigniaPage,
     createInsignia,
     renderEditInsignia,
-    editInsignia
+    editInsignia,
+    exportInsignia
 } from "../controllers/insignia.controller.js";
 
 const router = Router();
@@ -32,5 +33,6 @@ router.get("/editInsignia/:id", renderEditInsignia);
 
 router.post("/editInsignia", editInsignia)
 
+router.post("/exportInsignia", exportInsignia);
 
 export default router;

@@ -1,5 +1,5 @@
 import { pool } from "../database.js";
-
+import ExcelJS  from "exceljs";
 
 export const renderVideos = async (req, res) => {
   const [rows] = await pool.query("SELECT * FROM tbl_videos");
@@ -114,3 +114,94 @@ export const deleteVideo = async (req, res) => {
       optionExamenes: examanes,
     });
   };
+
+  export const exportVideo = async (req, res) => {
+    const {titulo, url, watch_id, descripcion, imagen, examen } = req.body;
+
+  let query = `select tv.id, tv.titulo, tv.url, tv.watch_id, tv.descripcion, tv.imagen, te.nombre as examen 
+  from tbl_videos tv LEFT JOIN tbl_examenes te on tv.examen_id = te.id
+  WHERE 1=1`;
+
+  let params = [];
+
+    if (titulo) {
+      query += ' AND tv.titulo LIKE ?';
+      params.push(`%${titulo}%`);
+    }
+
+    if (url) {
+      query += ' AND tv.url LIKE ?';
+      params.push(`%${url}%`);
+    }
+
+    if (watch_id) {
+      query += ' AND tv.watch_id LIKE ?';
+      params.push(`%${watch_id}%`);
+    }
+
+    if (descripcion) {
+      query += ' AND tv.descripcion LIKE ?';
+      params.push(`%${descripcion}%`);
+    }
+
+    if (imagen) {
+      query += ' AND tv.imagen LIKE ?';
+      params.push(`%${imagen}%`);
+    }
+
+    if (examen) {
+      query += ' AND te.nombre LIKE ?';
+      params.push(`%${examen}%`);
+    }
+  
+      const [rows] = await pool.query(query, params);
+  
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Video');
+  
+      // Agrega los encabezados
+      const headers = Object.keys(rows[0]);
+      worksheet.addRow(headers);
+  
+      // Aplica estilo a los encabezados
+      worksheet.getRow(1).eachCell((cell) => {
+        cell.font = { bold: true };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFFCC00' },
+        };
+      });
+      
+      // Agrega las filas de datos
+      rows.forEach(row => {
+        worksheet.addRow(Object.values(row));
+      });
+  
+      // Ajusta automáticamente el ancho de las columnas según el contenido
+      worksheet.columns.forEach((column) => {
+        let maxLength = 0;
+        column.eachCell({ includeEmpty: true }, (cell) => {
+          const columnLength = cell.value ? cell.value.toString().length : 10;
+          if (columnLength > maxLength) {
+            maxLength = columnLength;
+          }
+        });
+        column.width = maxLength < 10 ? 10 : maxLength;
+      });
+  
+      // Configura la respuesta para descargar el archivo
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="videos.xlsx"'
+      );
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      );
+  
+      await workbook.xlsx.write(res);
+      res.end();
+  };
+  

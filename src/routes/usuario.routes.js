@@ -8,7 +8,8 @@ import {
     renderCreateUsuarioPage,
     createUsuario,
     renderEditUsuario,
-    editUsuario
+    editUsuario,
+    exportUsuario
 } from "../controllers/usuario.controller.js";
 
 const router = Router();
@@ -32,6 +33,6 @@ router.get("/editUsuario/:id", renderEditUsuario);
 
 router.post("/editUsuario", editUsuario)
 
-
+router.post("/exportUsuario", exportUsuario);
 
 export default router;

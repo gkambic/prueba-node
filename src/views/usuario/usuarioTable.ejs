@@ -12,9 +12,9 @@
     Usuarios
   </h1>
 
-  <!-- <div class="filters-container">
+  <div class="filters-container">
     <form id="filters-form" method="POST" action="/usuarioTable" class="row">
-      <% let counter = 0; %>
+      <!-- <% let counter = 0; %>
       <% Object.keys(datos[0]).forEach(function(key) { %>
         <% if (key !== 'userId') { %>
           <div class="col-md-6">
@@ -28,13 +28,14 @@
             <div class="w-100"></div>
           <% } %>
         <% } %>
-      <% }); %>
+      <% }); %> -->
       <div class="col-12">
         <button type="submit" class="btn btn-primary">Buscar</button>
         <button type="button" class="btn btn-secondary" onclick="limpiarFiltros()">Limpiar Filtros</button>
+        <button type="button" class="btn btn-success" onclick="exportarDatos()">Exportar</button>
       </div>
     </form>
-  </div> -->
+  </div>
 
   <div class="table-container">
     <table>
@@ -70,6 +71,28 @@
     function limpiarFiltros() {
       document.querySelectorAll('#filters-form input').forEach(input => input.value = '');
       document.getElementById('filters-form').submit();
+    }
+
+    function exportarDatos() {
+      const form = document.getElementById('filters-form');
+      const formData = new FormData(form);
+
+      fetch('/exportUsuario', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'usuarios.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(error => console.error('Error:', error));
     }
   </script>
 </body>

@@ -8,7 +8,8 @@ import {
     createExamen,
     renderEditExamen,
     editExamen,
-    renderTableExamenGestion
+    renderTableExamenGestion,
+    exportExamen
 } from "../controllers/examen.controller.js";
 
 const router = Router();
@@ -30,6 +31,8 @@ router.post("/createExamen", createExamen);
 
 router.get("/editExamen/:id", renderEditExamen);
 
-router.post("/editExamen", editExamen)
+router.post("/editExamen", editExamen);
+
+router.post("/exportExamen", exportExamen);
 
 export default router;

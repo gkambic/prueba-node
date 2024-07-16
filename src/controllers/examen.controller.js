@@ -1,4 +1,5 @@
 import { pool } from "../database.js";
+import ExcelJS  from "exceljs";
 
 export const renderExamenes = async (req, res) => {
   const [rows] = await pool.query("SELECT * FROM tbl_examenes");
@@ -110,4 +111,85 @@ export const renderEditExamen = async (req, res) => {
     optionsCategory: categorias,
     optionVideos: videos,
   });
+};
+
+export const exportExamen = async (req, res) => {
+  const { nombre, url, video, categoria } = req.body;
+  
+    let query = `
+    SELECT te.nombre, te.url, tv.titulo AS video, tc.nombre AS categoria
+    FROM tbl_examenes te
+    LEFT JOIN tbl_videos tv ON te.id_video = tv.id
+    LEFT JOIN tbl_categorias tc ON te.categoria_id = tc.id
+    WHERE 1 = 1`;
+    let params = [];
+
+    if (nombre) {
+      query += ' AND te.nombre LIKE ?';
+      params.push(`%${nombre}%`);
+    }
+    if (url) {
+      query += ' AND te.url LIKE ?';
+      params.push(`%${url}%`);
+    }
+    if (categoria) {
+      query += ' AND tc.nombre LIKE ?';
+      params.push(`%${categoria}%`);
+    }
+    if (video) {
+      query += ' AND tv.titulo LIKE ?';
+      params.push(`%${video}%`);
+    }
+
+    console.log(query);
+
+    const [rows] = await pool.query(query, params);
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Examenes');
+
+    // Agrega los encabezados
+    const headers = Object.keys(rows[0]);
+    worksheet.addRow(headers);
+
+    // Aplica estilo a los encabezados
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFFCC00' },
+      };
+    });
+    
+    // Agrega las filas de datos
+    rows.forEach(row => {
+      worksheet.addRow(Object.values(row));
+    });
+
+    // Ajusta automáticamente el ancho de las columnas según el contenido
+    worksheet.columns.forEach((column) => {
+      let maxLength = 0;
+      column.eachCell({ includeEmpty: true }, (cell) => {
+        const columnLength = cell.value ? cell.value.toString().length : 10;
+        if (columnLength > maxLength) {
+          maxLength = columnLength;
+        }
+      });
+      column.width = maxLength < 10 ? 10 : maxLength;
+    });
+
+    // Configura la respuesta para descargar el archivo
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="examenes.xlsx"'
+    );
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
 };

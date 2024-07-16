@@ -8,7 +8,8 @@ import {
     renderCreateVideoPage,
     createVideo,
     renderEditVideo,
-    editVideo
+    editVideo,
+    exportVideo
 } from "../controllers/video.controller.js";
 
 const router = Router();
@@ -32,6 +33,6 @@ router.get("/editVideo/:id", renderEditVideo);
 
 router.post("/editVideo", editVideo)
 
-
+router.post("/exportVideo", exportVideo);
 
 export default router;
