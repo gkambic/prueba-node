@@ -2,10 +2,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const database = {
-  host: 'expertosdelcemento-dev-server.mysql.database.azure.com',
-        user: 'expertosdelcementoDev',
-        password: process.env.AZURE_MYSQL_PASSWORD,
-        database: 'expertosdelcemento-dev-database'
+  host: process.env.AZURE_MYSQL_HOST,
+  user: process.env.AZURE_MYSQL_USERNAME,
+  password: process.env.AZURE_MYSQL_PASSWORD,
+  database: process.env.AZURE_MYSQL_DBNAME,
+  port: process.env.AZURE_MYSQL_PORT
 };
 
 export const SECRET = process.env.SECRET || 'some secret key';
