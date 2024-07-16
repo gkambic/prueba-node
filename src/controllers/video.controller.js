@@ -118,7 +118,7 @@ export const deleteVideo = async (req, res) => {
   export const exportVideo = async (req, res) => {
     const {titulo, url, watch_id, descripcion, imagen, examen } = req.body;
 
-  let query = `select tv.id, tv.titulo, tv.url, tv.watch_id, tv.descripcion, tv.imagen, te.nombre as examen 
+  let query = `select tv.titulo, tv.url, tv.watch_id, tv.descripcion, tv.imagen, te.nombre as examen 
   from tbl_videos tv LEFT JOIN tbl_examenes te on tv.examen_id = te.id
   WHERE 1=1`;
 

@@ -15,7 +15,8 @@
   <div class="filters-container">
     <form id="filters-form" method="POST" action="/videoTable" class="row">
       <% let counter = 0; %>
-      <% Object.keys(datos[0]).forEach(function(key) { %>
+      <% let filterKeys = datos.length > 0 ? Object.keys(datos[0]) : Object.keys(filtros); %>
+      <% filterKeys.forEach(function(key) { %>
         <% if (key !== 'id') { %>
           <div class="col-md-6">
             <div class="form-group">
@@ -40,7 +41,8 @@
   <div class="table-container">
     <table>
       <thead>
-        <tr>
+        <% if (datos.length > 0) { %>
+          <tr>
           <% Object.keys(datos[0]).forEach(function(key) { %>
             <% if (key === 'id') { %>
               <th class="hidden-column"><%= key %></th>
@@ -49,6 +51,11 @@
             <% } %>
           <% }); %>
         </tr>
+        <% } else { %>
+          <tr>
+            <th class="centered" colspan="10">No se encontraron registros</th>
+          </tr>
+        <% } %>
       </thead>
       <tbody>
         <% datos.forEach(function(dato) { %>
