@@ -4,7 +4,7 @@ config();
 export const database = {
   host: 'expertosdelcemento-dev-server.mysql.database.azure.com',
         user: 'expertosdelcementoDev',
-        password: 'DataBase24!',
+        password: process.env.AZURE_MYSQL_PASSWORD,//'DataBase24!',
         database: 'expertosdelcemento-dev-database'
 };
 
