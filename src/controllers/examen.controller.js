@@ -101,7 +101,7 @@ export const renderTableExamenGestion = async (req, res) => {
 
 export const deleteExamen = async (req, res) => {
   const { id } = req.params;
-  console.log("Este es el id a borrar", id);
+  console.log("Este es el id a Borrar", id);
   await pool.query("DELETE FROM tbl_examenes WHERE ID = ?", [id]);
   await req.setFlash("success", `examen ${id} Removed Successfully`);
   return res.redirect("/examenGestion");

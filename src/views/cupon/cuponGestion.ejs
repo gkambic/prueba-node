@@ -4,6 +4,11 @@
   <%- include('../partials/header') %>
   <title>Gestion de Cupones</title>
   <link rel="stylesheet" href="css/tableStyle.css">
+  <style>
+    .confirm-delete {
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <%- include('../partials/navigation') %>
@@ -36,8 +41,8 @@
               <% } %>
             <% }); %>
             <td>
-              <a href="/editCupon/<%= dato.id %>" class="btn btn-outline-info">editar</a>
-              <a href="/deleteCupon/<%= dato.id %>" class="btn btn-outline-danger">borrar</a>
+              <a href="/editCupon/<%= dato.id %>" class="btn btn-outline-info">Editar</a>
+              <a href="/deleteCupon/<%= dato.id %>" class="btn btn-outline-danger confirm-delete" data-id="<%= dato.id %>">Borrar</a>
             </td>
           </tr>
         <% }); %>
@@ -47,5 +52,19 @@
   </div>
 
   <%- include('../partials/footer') %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.confirm-delete').forEach(button => {
+        button.addEventListener('click', function(event) {
+          event.preventDefault();
+          const url = this.getAttribute('href');
+          const id = this.getAttribute('data-id');
+          if (confirm('¿Estás seguro de que quieres eliminar este cupón?')) {
+            window.location.href = url;
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

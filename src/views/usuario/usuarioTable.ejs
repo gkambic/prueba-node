@@ -14,18 +14,27 @@
 
   <div class="filters-container">
     <form id="filters-form" method="POST" action="/usuarioTable" class="row">
+      <!-- Filtro para fechas (desde y hasta) -->
+      <div class="col-md-6">
+        <div class="form-group d-flex">
+          <div class="mr-2">
+            <label for="desde">Desde:</label>
+            <input type="date" name="desde" class="form-control" placeholder="Desde" value="<%= filtros.desde || '' %>">
+          </div>
+          <div>
+            <label for="hasta">Hasta:</label>
+            <input type="date" name="hasta" class="form-control" placeholder="Hasta" value="<%= filtros.hasta || '' %>">
+          </div>
+        </div>
+      </div>
+
+      <div class="w-100"></div>
+
       <% let counter = 0; %>
       <% let filterKeys = datos.length > 0 ? Object.keys(datos[0]) : Object.keys(filtros); %>
       <% filterKeys.forEach(function(key) { %>
         <% if (key !== 'userId') { %>
-          <% if (key === 'createdDtm') { %>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>
-                <input type="date" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="<%= key %>" value="<%= filtros[key] || '' %>">
-              </div>
-            </div>
-          <% } else { %>
+          <% if (key !== 'createdDtm') { %>
             <div class="col-md-3">
               <div class="form-group">
                 <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>

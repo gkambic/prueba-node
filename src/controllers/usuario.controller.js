@@ -9,14 +9,23 @@ export const renderUsuarios = async (req, res) => {
 
 export const renderTableUsuarioPage = async (req, res) => {
 
-  const { name, lastname, email, dni, mobile, provincia, ciudad, corralon, profesion, antiguedad, createdDtm } = req.body;
+  const { desde, hasta, name, lastname, email, mobile, provincia, ciudad, corralon, profesion, antiguedad } = req.body;
 
   console.log(req.body);
-  let query = `SELECT name, lastname, email, dni, mobile, provincia, ciudad, corralon, profesion, antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as createdDtm
+  let query = `SELECT name, lastname, email, mobile, provincia, ciudad, corralon, profesion, antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as createdDtm
                FROM tbl_users
                WHERE 1=1`; // 'WHERE 1=1' es una forma común de simplificar la concatenación de condiciones
 
   const params = [];
+
+  if (desde) {
+    query += ' AND createdDtm >= ?';
+    params.push(desde);
+  }
+  if (hasta) {
+    query += ' AND createdDtm <= ?';
+    params.push(hasta);
+  }
 
   if (name) {
     query += ' AND name LIKE ?';
@@ -31,11 +40,6 @@ export const renderTableUsuarioPage = async (req, res) => {
   if (email) {
     query += ' AND email LIKE ?';
     params.push(`%${email}%`);
-  }
-
-  if (dni) {
-    query += ' AND dni = ?';
-    params.push(dni);
   }
 
   if (mobile) {
@@ -68,13 +72,6 @@ export const renderTableUsuarioPage = async (req, res) => {
     params.push(antiguedad);
   }
 
-  if (createdDtm) {
-    const formattedDate = formatDate(createdDtm);
-    console.log(formattedDate);
-    query += ` AND DATE_FORMAT(createdDtm, '%d-%m-%Y') = ?`;
-    params.push(formattedDate);
-  }
-
   console.log(query, params);
   const [rows] = await pool.query(query, params);
 
@@ -83,13 +80,13 @@ export const renderTableUsuarioPage = async (req, res) => {
 
 export const deleteUsuario = async (req, res) => {
   const { id } = req.params;
-  await pool.query("DELETE FROM tbl_users WHERE ID = ?", [id]);
+  await pool.query("DELETE FROM tbl_users WHERE userid = ?", [id]);
   await req.setFlash("success", `usuario ${id} Removed Successfully`);
   return res.redirect("usuario/usuarioList");
 };
 
 export const renderTableUsuarioGestion = async (req, res) => {
-  const [rows] = await pool.query("SELECT * FROM tbl_users");
+  const [rows] = await pool.query("SELECT userid, name, lastname, email, mobile, provincia, ciudad, corralon, profesion, antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as createdDtm from tbl_users");
   res.render("usuario/usuarioGestion", { datos: rows });
 };
 
@@ -126,7 +123,7 @@ export const editUsuario = async (req, res) => {
 
 export const renderEditUsuario = async (req, res) => {
   const { id } = req.params;
-  const [result] = await pool.query("SELECT * FROM tbl_users WHERE id = ?", [
+  const [result] = await pool.query("SELECT * FROM tbl_users WHERE userid = ?", [
     id,
   ]);
   const datos = result[0];
@@ -146,7 +143,7 @@ export const exportUsuario = async (req, res) => {
   
   const { nombre, url, video, categoria } = req.body;
 
-  let query = `SELECT name, lastname, email,  dni, mobile, provincia, ciudad, corralon, profesion, antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as createdDtm
+  let query = `SELECT name, lastname, email, mobile, provincia, ciudad, corralon, profesion, antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as createdDtm
     FROM tbl_users`;
 
   let params = [];

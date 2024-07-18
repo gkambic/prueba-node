@@ -17,7 +17,7 @@
       <thead>
         <tr>
           <% Object.keys(datos[0]).forEach(function(key) { %>
-            <% if (key === 'id') { %>
+            <% if (key === 'userid') { %>
               <th class="hidden-column"><%= key %></th>
             <% } else { %>
               <th><%= key %></th>
@@ -29,15 +29,15 @@
         <% datos.forEach(function(dato) { %>
           <tr>
             <% Object.keys(dato).forEach(function(key) { %>
-              <% if (key === 'id') { %>
+              <% if (key === 'userid') { %>
                 <td class="hidden-column"><%= dato[key] %></td>
               <% } else { %>
                 <td><%= dato[key] %></td>
               <% } %>
             <% }); %>
             <td>
-              <a href="/editExamen/<%= dato.id %>" class="btn btn-outline-info">editar</a>
-              <a href="/deleteExamen/<%= dato.id %>" class="btn btn-outline-danger">borrar</a>
+              <a href="/editUsuario/<%= dato.userid %>" class="btn btn-outline-info">Editar</a>
+              <a href="/deleteUsuario/<%= dato.userid %>" class="btn btn-outline-danger">Borrar</a>
             </td>
           </tr>
         <% }); %>
