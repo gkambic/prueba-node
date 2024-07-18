@@ -7,19 +7,19 @@ export const renderExamenes = async (req, res) => {
 };
 
 export const renderTableExamenPage = async (req, res) => {
-  const { nombre, url, categoria } = req.body;
+  const { nombre, url, categoria, aprobado, provincia, localidad, profesion } = req.body;
 console.log(req.body);
     let query = `
     SELECT
     e.id,
-    e.Nombre,
+    e.nombre,
     e.url,
     tc.nombre as categoria,
     JSON_ARRAYAGG(
         JSON_OBJECT(
             'Name', u.Name,
             'Lastname', u.Lastname,
-            'Aprobado', iu.Aprobado,
+            'Aprobado', case iu.Aprobado when 1 then 'SI' when 0 then 'NO' else null end,
             'Puntaje', iu.Puntaje,
             'Mobile', u.Mobile,
             'Dni', u.Dni,
@@ -35,9 +35,8 @@ inner join tbl_examenes e on e.categoria_id  = tc.id
 LEFT JOIN tbl_insignias i ON i.examen_id = e.Id
 LEFT JOIN tbl_insignias_usuario iu ON i.Id = iu.id_insignia 
 LEFT JOIN tbl_users u ON iu.id_usuario = u.userId 
-GROUP BY e.Id, e.Nombre, e.url , tc.nombre 
-ORDER BY e.Id
-  `;
+WHERE 1 = 1 `;
+
     let params = [];
 
     if (nombre) {
@@ -48,11 +47,40 @@ ORDER BY e.Id
       query += ' AND e.url LIKE ?';
       params.push(`%${url}%`);
     }
-    /* if (categoria) {
+    
+    if (categoria) {
       query += ' AND tc.id = ?';
       params.push(categoria);
-    } */
+    }
 
+    if (aprobado !== undefined && aprobado !== '') {
+      if (aprobado==='2') {
+        query += ' AND iu.puntaje >=90';
+      } else {
+        query += ' AND iu.Aprobado = ?';
+        params.push(aprobado);
+      }
+    }
+    
+    if (provincia) {
+      query += " AND u.Provincia LIKE ?";
+      params.push(`%${provincia}%`);
+    }
+
+    if (localidad) {
+      query += " AND u.Ciudad LIKE ?";
+      params.push(`%${localidad}%`);
+    }
+
+    if (profesion) {
+      query += " AND u.Profesion LIKE ?";
+      params.push(`%${profesion}%`);
+    }
+
+    query += ` 
+    GROUP BY e.Id, e.Nombre, e.url , tc.nombre 
+    ORDER BY e.Id`;
+      
     console.log(query);
 
     const [rows] = await pool.query(query, params);
