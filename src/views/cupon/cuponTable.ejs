@@ -14,31 +14,46 @@
 
   <div class="filters-container">
     <form id="filters-form" method="POST" action="/cuponTable" class="row">
-      <% let counter = 0; %>
+      <!-- Filtro para fechas (desde y hasta) -->
+      <div class="col-md-6">
+        <div class="form-group d-flex">
+          <div class="mr-2">
+            <label for="desde">Desde:</label>
+            <input type="date" name="desde" class="form-control" placeholder="Desde" value="<%= filtros.desde || '' %>">
+          </div>
+          <div>
+            <label for="hasta">Hasta:</label>
+            <input type="date" name="hasta" class="form-control" placeholder="Hasta" value="<%= filtros.hasta || '' %>">
+          </div>
+        </div>
+      </div>
+
+      <div class="w-100"></div>
+
       <% let filterKeys = datos.length > 0 ? Object.keys(datos[0]) : Object.keys(filtros); %>
       <% filterKeys.forEach(function(key) { %>
-        <% if (key !== 'id') { %>
-          <% if (key === 'vencimiento') { %>
-            <div class="col-md-3">
-              <div class="form-group">
-                <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>
-                <input type="date" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="Search <%= key %>" value="<%= filtros[key] || '' %>">
-              </div>
-            </div>
-          <% } else { %>
+          <% if (key === 'codigo') { %>
             <div class="col-md-3">
               <div class="form-group">
                 <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>
                 <input type="text" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="Search <%= key %>" value="<%= filtros[key] || '' %>">
               </div>
             </div>
-          <% } %>
-          <% counter++; %>
-          <% if (counter % 2 === 0) { %>
-            <div class="w-100"></div>
-          <% } %>
         <% } %>
       <% }); %>
+
+      <!-- Filter for 'otorgado' -->
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="otorgado">Otorgado:</label>
+          <select name="otorgado" class="form-control" id="otorgado">
+            <option value="" <% if (!filtros.otorgado) { %> selected <% } %>>Todos</option>
+            <option value="1" <% if (filtros.otorgado === '1') { %> selected <% } %>>Sí</option>
+            <option value="0" <% if (filtros.otorgado === '0') { %> selected <% } %>>No</option>
+          </select>
+        </div>
+      </div>
+
       <div class="col-12">
         <button type="submit" class="btn btn-primary">Buscar</button>
         <button type="button" class="btn btn-secondary" onclick="limpiarFiltros()">Limpiar Filtros</button>
@@ -86,6 +101,7 @@
   <script>
     function limpiarFiltros() {
       document.querySelectorAll('#filters-form input').forEach(input => input.value = '');
+      document.querySelectorAll('#filters-form select').forEach(select => select.value = '');
       document.getElementById('filters-form').submit();
     }
 

@@ -8,21 +8,31 @@ export const renderCupones = async (req, res) => {
 };
 
 export const renderTableCuponPage = async (req, res) => {
-  const { codigo, vencimiento } = req.body;
-  let query ="SELECT id, codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento FROM tbl_cupones WHERE 1 = 1";
+  const { codigo, desde, hasta, otorgado } = req.body;
+
+  let query =`select * from (
+    select c.id, c.codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento, case when tcu.id is null then 'NO' else 'SI' end otorgado
+    from tbl_cupones c left join tbl_cupones_usuarios tcu on c.id = tcu.id_usuario ) as TempTable WHERE 1 = 1`;
 
   let params = [];
 
     if (codigo) {
-      query += ' AND codigo LIKE ?';
+      query += ' AND TempTable.codigo LIKE ?';
       params.push(`%${codigo}%`);
     }
 
-    if(vencimiento) {
-      const formattedDate = formatDate(vencimiento);
-      console.log(formattedDate);
-      query += ` AND DATE_FORMAT(vencimiento, '%d-%m-%Y') = ?`;
-      params.push(formattedDate);
+    if (desde) {
+      query += ' AND TempTable.vencimiento >= ?';
+      params.push(desde);
+    }
+    if (hasta) {
+      query += ' AND TempTable.vencimiento <= ?';
+      params.push(hasta);
+    }
+
+    if (otorgado !== undefined && otorgado !== '') {
+      query += ' AND TempTable.otorgado = ?';
+      params.push(otorgado === '1' ? 'SI' : 'NO');
     }
 
     const [rows] = await pool.query(query, params);
@@ -88,21 +98,30 @@ export const deleteCupon = async (req, res) => {
   };
 
   export const exportCupon = async (req, res) => {
-    const { codigo, vencimiento } = req.body;
-    let query ="SELECT codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento FROM tbl_cupones WHERE 1 = 1";
-
+    const { codigo, desde, hasta, otorgado } = req.body;
+    let query =`select * from (
+      select c.id, c.codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento, case when tcu.id is null then 'NO' else 'SI' end otorgado
+      from tbl_cupones c left join tbl_cupones_usuarios tcu on c.id = tcu.id_usuario ) as TempTable WHERE 1 = 1`;
+  
     let params = [];
-
+  
       if (codigo) {
-        query += ' AND codigo LIKE ?';
+        query += ' AND TempTable.codigo LIKE ?';
         params.push(`%${codigo}%`);
       }
-
-      if(vencimiento) {
-        const formattedDate = formatDate(vencimiento);
-        console.log(formattedDate);
-        query += ` AND DATE_FORMAT(vencimiento, '%d-%m-%Y') = ?`;
-        params.push(formattedDate);
+  
+      if (desde) {
+        query += ' AND TempTable.vencimiento >= ?';
+        params.push(desde);
+      }
+      if (hasta) {
+        query += ' AND TempTable.vencimiento <= ?';
+        params.push(hasta);
+      }
+  
+      if (otorgado !== undefined && otorgado !== '') {
+        query += ' AND TempTable.otorgado = ?';
+        params.push(otorgado === '1' ? 'SI' : 'NO');
       }
   
       console.log(query);
