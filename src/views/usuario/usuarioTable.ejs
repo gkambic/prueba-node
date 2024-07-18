@@ -34,15 +34,15 @@
       <% let filterKeys = datos.length > 0 ? Object.keys(datos[0]) : Object.keys(filtros); %>
       <% filterKeys.forEach(function(key) { %>
         <% if (key !== 'userId') { %>
-          <% if (key !== 'createdDtm') { %>
+          <% if (key !== 'FechaCreacion' && key !== 'desde' && key !== 'hasta'  ) { %>
             <div class="col-md-3">
               <div class="form-group">
                 <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>
                 <input type="text" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="<%= key %>" value="<%= filtros[key] || '' %>">
               </div>
             </div>
+            <% counter++; %>
           <% } %>
-          <% counter++; %>
           <% if (counter % 4 === 0) { %>
             <div class="w-100"></div>
           <% } %>

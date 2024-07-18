@@ -9,12 +9,15 @@ export const renderUsuarios = async (req, res) => {
 
 export const renderTableUsuarioPage = async (req, res) => {
 
-  const { desde, hasta, name, lastname, email, mobile, provincia, ciudad, corralon, profesion, antiguedad } = req.body;
+  const { desde, hasta, Nombre, Apellido, Mail, Telefono, Provincia, Ciudad, Corralon, Profesion, Antiguedad, Rol } = req.body;
 
   console.log(req.body);
-  let query = `SELECT name, lastname, email, mobile, provincia, ciudad, corralon, profesion, antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as createdDtm
-               FROM tbl_users
-               WHERE 1=1`; // 'WHERE 1=1' es una forma común de simplificar la concatenación de condiciones
+  let query = `SELECT name as Nombre, lastname as Apellido, email as Mail, mobile as Telefono, 
+                provincia as Provincia, ciudad as Ciudad, corralon as Corralon, 
+                profesion as Profesion, antiguedad as Antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as FechaCreacion, 
+                tr.role as Rol
+                from tbl_users u, tbl_roles tr 
+                where tr.roleId  = u.roleId`; 
 
   const params = [];
 
@@ -27,51 +30,55 @@ export const renderTableUsuarioPage = async (req, res) => {
     params.push(hasta);
   }
 
-  if (name) {
+  if (Nombre) {
     query += ' AND name LIKE ?';
-    params.push(`%${name}%`);
+    params.push(`%${Nombre}%`);
   }
 
-  if (lastname) {
+  if (Apellido) {
     query += ' AND lastname LIKE ?';
-    params.push(`%${lastname}%`);
+    params.push(`%${Apellido}%`);
   }
 
-  if (email) {
+  if (Mail) {
     query += ' AND email LIKE ?';
-    params.push(`%${email}%`);
+    params.push(`%${Mail}%`);
   }
 
-  if (mobile) {
+  if (Telefono) {
     query += ' AND mobile LIKE ?';
-    params.push(`%${mobile}%`);
+    params.push(`%${Telefono}%`);
   }
 
-  if (provincia) {
+  if (Provincia) {
     query += ' AND provincia LIKE ?';
-    params.push(`%${provincia}%`);
+    params.push(`%${Provincia}%`);
   }
 
-  if (ciudad) {
+  if (Ciudad) {
     query += ' AND ciudad LIKE ?';
-    params.push(`%${ciudad}%`);
+    params.push(`%${Ciudad}%`);
   }
 
-  if (corralon) {
+  if (Corralon) {
     query += ' AND corralon LIKE ?';
-    params.push(`%${corralon}%`);
+    params.push(`%${Corralon}%`);
   }
 
-  if (profesion) {
+  if (Profesion) {
     query += ' AND profesion LIKE ?';
-    params.push(`%${profesion}%`);
+    params.push(`%${Profesion}%`);
   }
 
-  if (antiguedad) {
+  if (Antiguedad) {
     query += ' AND antiguedad = ?';
-    params.push(antiguedad);
+    params.push(Antiguedad);
   }
 
+  if (Rol) {
+    query += ' AND tr.role LIKE?';
+    params.push(`%${Rol}%`);
+  }
   console.log(query, params);
   const [rows] = await pool.query(query, params);
 
@@ -86,7 +93,12 @@ export const deleteUsuario = async (req, res) => {
 };
 
 export const renderTableUsuarioGestion = async (req, res) => {
-  const [rows] = await pool.query("SELECT userid, name, lastname, email, mobile, provincia, ciudad, corralon, profesion, antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as createdDtm from tbl_users");
+  const [rows] = await pool.query(`SELECT userid, name as Nombre, lastname as Apellido, email as Mail, mobile as Telefono, 
+                                  provincia as Provincia, ciudad as Ciudad, corralon as Corralon, 
+                                  profesion as Profesion, antiguedad as Antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as FechaCreacion, 
+                                  tr.role as Rol
+                                  from tbl_users u, tbl_roles tr 
+                                  where tr.roleId  = u.roleId `);
   res.render("usuario/usuarioGestion", { datos: rows });
 };
 
