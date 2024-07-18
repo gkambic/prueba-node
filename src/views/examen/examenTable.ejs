@@ -5,6 +5,17 @@
   <title>Consulta de Examenes</title>
   <link rel="stylesheet" href="css/tableStyle.css">
   <link rel="stylesheet" href="css/filterStyle.css">
+  <style>
+    .details-row {
+      display: none;
+    }
+    .details-row.active {
+      display: table-row;
+    }
+    .details-row td {
+      background-color: #f9f9f9;
+    }
+  </style>
 </head>
 <body>
   <%- include('../partials/navigation') %>
@@ -17,11 +28,20 @@
       <% let counter = 0; %>
       <% let filterKeys = datos.length > 0 ? Object.keys(datos[0]) : Object.keys(filtros); %>
       <% filterKeys.forEach(function(key) { %>
-        <% if (key !== 'id') { %>
+        <% if (key !== 'id' && key !== 'Usuarios') { %>
           <div class="col-md-6">
             <div class="form-group">
               <label for="<%= key %>"><%= key.charAt(0).toUpperCase() + key.slice(1) %>:</label>
-              <input type="text" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="Search <%= key %>" value="<%= filtros[key] || '' %>">
+              <% if (key === 'categoria') { %>
+                <select name="categoria" class="form-control">
+                  <option value="">Seleccione una categoría</option>
+                  <% categorias.forEach(function(cat) { %>
+                    <option value="<%= cat.id %>" <%= filtros.categoria === String(cat.id) ? 'selected' : '' %>><%= cat.nombre %></option>
+                  <% }); %>
+                </select>
+              <% } else { %>
+                <input type="text" name="<%= key %>" class="form-control" id="<%= key %>" placeholder="Search <%= key %>" value="<%= filtros[key] || '' %>">
+              <% } %>
             </div>
           </div>
           <% counter++; %>
@@ -47,7 +67,12 @@
             <% if (key === 'id') { %>
               <th class="hidden-column"><%= key %></th>
             <% } else { %>
-              <th><%= key %></th>
+              <% if (key !== 'Usuarios') { %>
+                <th><%= key %></th>
+              <% } %>
+            <% } %>
+            <% if (key === 'Id') { %>
+              <th>Acciones</th>
             <% } %>
           <% }); %>
         </tr>
@@ -58,15 +83,56 @@
         <% } %>
       </thead>
       <tbody>
-        <% datos.forEach(function(dato) { %>
+        <% datos.forEach((dato, index) => { %>
           <tr>
             <% Object.keys(dato).forEach(function(key) { %>
               <% if (key === 'id') { %>
                 <td class="hidden-column"><%= dato[key] %></td>
               <% } else { %>
-                <td><%= dato[key] %></td>
+                <% if (key !== 'Usuarios') { %>
+                  <td><%= dato[key] %></td>
+                <% } %>
               <% } %>
             <% }); %>
+            <td><button onclick="toggleDetails(<%= index %>)">Ver Usuarios</button></td>
+          </tr>
+          <tr class="details-row" id="details-row-<%= index %>">
+            <td colspan="12">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Lastname</th>
+                    <th>Aprobado</th>
+                    <th>Puntaje</th>
+                    <th>Mobile</th>
+                    <th>Dni</th>
+                    <th>Provincia</th>
+                    <th>Ciudad</th>
+                    <th>Corralon</th>
+                    <th>Trabajador Construcción</th>
+                    <th>Profesion</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% dato.Usuarios.forEach(user => { %>
+                    <tr>
+                      <td><%= user.Name %></td>
+                      <td><%= user.Lastname %></td>
+                      <td><%= user.Aprobado %></td>
+                      <td><%= user.Puntaje %></td>
+                      <td><%= user.Mobile %></td>
+                      <td><%= user.Dni %></td>
+                      <td><%= user.Provincia %></td>
+                      <td><%= user.Ciudad %></td>
+                      <td><%= user.Corralon %></td>
+                      <td><%= user.TrabajadorContruccion %></td>
+                      <td><%= user.Profesion %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </td>
           </tr>
         <% }); %>
       </tbody>
@@ -77,6 +143,7 @@
   <script>
     function limpiarFiltros() {
       document.querySelectorAll('#filters-form input').forEach(input => input.value = '');
+      document.querySelectorAll('#filters-form select').forEach(select => select.value = '');
       document.getElementById('filters-form').submit();
     }
 
@@ -100,6 +167,11 @@
         window.URL.revokeObjectURL(url);
       })
       .catch(error => console.error('Error:', error));
+    }
+
+    function toggleDetails(index) {
+      const detailsRow = document.getElementById(`details-row-${index}`);
+      detailsRow.classList.toggle('active');
     }
   </script>
 </body>

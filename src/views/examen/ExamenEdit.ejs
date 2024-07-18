@@ -33,16 +33,6 @@
             </select>
           </div>
 
-          <div class="mb-3">
-            <label for="video">Video</label>
-            <select name="video_id" class="form-select" aria-label="Default select example">
-              <option disabled>Open this select menu</option>
-              <% optionVideos.forEach(function(option) { %>
-                <option value="<%= option.id %>" <%= datos.video_id == option.id ? 'selected' : '' %>><%= option.titulo %></option>
-              <% }); %>
-            </select>
-          </div>
-
           <button type="submit" class="btn btn-primary" tabindex="5">Guardar</button>
           <a href="/examenGestion" class="btn btn-secondary">Cancelar</a>
         </form>

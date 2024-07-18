@@ -7,45 +7,65 @@ export const renderExamenes = async (req, res) => {
 };
 
 export const renderTableExamenPage = async (req, res) => {
-  const { nombre, url, video, categoria } = req.body;
+  const { nombre, url, categoria } = req.body;
 console.log(req.body);
     let query = `
-    SELECT te.id, te.nombre, te.url, tv.titulo AS video, tc.nombre AS categoria
-    FROM tbl_examenes te
-    LEFT JOIN tbl_videos tv ON te.id_video = tv.id
-    LEFT JOIN tbl_categorias tc ON te.categoria_id = tc.id
-    WHERE 1 = 1`;
+    SELECT
+    e.id,
+    e.Nombre,
+    e.url,
+    tc.nombre as categoria,
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'Name', u.Name,
+            'Lastname', u.Lastname,
+            'Aprobado', iu.Aprobado,
+            'Puntaje', iu.Puntaje,
+            'Mobile', u.Mobile,
+            'Dni', u.Dni,
+            'Provincia', u.Provincia,
+            'Ciudad', u.Ciudad,
+            'Corralon', u.Corralon,
+            'TrabajadorContruccion', u.trabajador_contruccion ,
+            'Profesion', u.Profesion
+        )
+    ) AS Usuarios
+FROM tbl_categorias tc 
+inner join tbl_examenes e on e.categoria_id  = tc.id 
+LEFT JOIN tbl_insignias i ON i.examen_id = e.Id
+LEFT JOIN tbl_insignias_usuario iu ON i.Id = iu.id_insignia 
+LEFT JOIN tbl_users u ON iu.id_usuario = u.userId 
+GROUP BY e.Id, e.Nombre, e.url , tc.nombre 
+ORDER BY e.Id
+  `;
     let params = [];
 
     if (nombre) {
-      query += ' AND te.nombre LIKE ?';
+      query += ' AND e.nombre LIKE ?';
       params.push(`%${nombre}%`);
     }
     if (url) {
-      query += ' AND te.url LIKE ?';
+      query += ' AND e.url LIKE ?';
       params.push(`%${url}%`);
     }
-    if (categoria) {
-      query += ' AND tc.nombre LIKE ?';
-      params.push(`%${categoria}%`);
-    }
-    if (video) {
-      query += ' AND tv.titulo LIKE ?';
-      params.push(`%${video}%`);
-    }
+    /* if (categoria) {
+      query += ' AND tc.id = ?';
+      params.push(categoria);
+    } */
 
     console.log(query);
 
     const [rows] = await pool.query(query, params);
 
-    res.render('examen/examenTable', { datos: rows , filtros: req.body });
+    const [categorias] = await pool.query("SELECT * FROM tbl_categorias");
+
+    res.render('examen/examenTable', { datos: rows , filtros: req.body, categorias });
 };
 
 export const renderTableExamenGestion = async (req, res) => {
   const [rows] = await pool.query(`
-    SELECT te.id, te.nombre, te.url, tv.titulo AS video, tc.nombre AS categoria
+    SELECT te.id, te.nombre, te.url, tc.nombre AS categoria
     FROM tbl_examenes te
-    LEFT JOIN tbl_videos tv ON te.id_video = tv.id
     LEFT JOIN tbl_categorias tc ON te.categoria_id = tc.id
   `);
   res.render("examen/examenGestion", { datos: rows });
@@ -61,35 +81,32 @@ export const deleteExamen = async (req, res) => {
 
 export const renderCreateExamenPage = async (req, res) => {
   const [categorias] = await pool.query("SELECT * FROM tbl_categorias");
-  const [videos] = await pool.query("SELECT * FROM tbl_videos");
   res.render("examen/ExamenCreate", {
     optionsCategory: categorias,
-    optionVideos: videos,
   });
 };
 
 export const createExamen = async (req, res) => {
-  const { nombre, url, categoria_id, video_id } = req.body;
+  const { nombre, url, categoria_id } = req.body;
   console.log(req.body);
     
   // Usar null en lugar de valores vacíos
     const categoriaId = categoria_id ? categoria_id : null;
-    const videoId = video_id ? video_id : null;
 
   await pool.query(
-    "INSERT INTO tbl_examenes (nombre, url, categoria_id, id_video) VALUES (?, ?, ?, ?)",
-    [nombre, url, categoriaId, videoId]
+    "INSERT INTO tbl_examenes (nombre, url, categoria_id) VALUES (?, ?, ?)",
+    [nombre, url, categoriaId]
   );
   await req.setFlash("success", "examen Added Successfully");
   return res.redirect("/examenGestion");
 };
 
 export const editExamen = async (req, res) => {
-  const { id, nombre, url, categoria_id, video_id } = req.body;
+  const { id, nombre, url, categoria_id } = req.body;
   console.log("Este es el id", id);
   await pool.query(
-    "UPDATE tbl_examenes SET nombre = ?, url = ?, categoria_id = ?, id_video = ? WHERE id = ?",
-    [nombre, url, categoria_id, video_id, id]
+    "UPDATE tbl_examenes SET nombre = ?, url = ?, categoria_id = ? WHERE id = ?",
+    [nombre, url, categoria_id, id]
   );
   await req.setFlash("success", "examen Added Successfully");
   return res.redirect("/examenGestion");
@@ -102,24 +119,21 @@ export const renderEditExamen = async (req, res) => {
   ]);
   const datos = result[0];
 
-  // Consulta para obtener las opciones de categoría y videos
+  // Consulta para obtener las opciones de categoría
   const [categorias] = await pool.query("SELECT * FROM tbl_categorias");
-  const [videos] = await pool.query("SELECT * FROM tbl_videos");
 
   res.render("examen/ExamenEdit", {
     datos,
     optionsCategory: categorias,
-    optionVideos: videos,
   });
 };
 
 export const exportExamen = async (req, res) => {
-  const { nombre, url, video, categoria } = req.body;
+  const { nombre, url, categoria } = req.body;
   
     let query = `
-    SELECT te.nombre, te.url, tv.titulo AS video, tc.nombre AS categoria
+    SELECT te.nombre, te.url, tc.nombre AS categoria
     FROM tbl_examenes te
-    LEFT JOIN tbl_videos tv ON te.id_video = tv.id
     LEFT JOIN tbl_categorias tc ON te.categoria_id = tc.id
     WHERE 1 = 1`;
     let params = [];
@@ -133,12 +147,8 @@ export const exportExamen = async (req, res) => {
       params.push(`%${url}%`);
     }
     if (categoria) {
-      query += ' AND tc.nombre LIKE ?';
-      params.push(`%${categoria}%`);
-    }
-    if (video) {
-      query += ' AND tv.titulo LIKE ?';
-      params.push(`%${video}%`);
+      query += ' AND tc.id = ?';
+      params.push(categoria);
     }
 
     console.log(query);

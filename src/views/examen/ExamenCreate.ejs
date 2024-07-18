@@ -37,15 +37,7 @@
                     <% }); %>
                 </select>
             </div>
-            <div class="mb-3">
-                <label for="video">Video</label>
-                <select name="video_id" class="form-select" aria-label="Default select example">
-                    <option selected></option>
-                    <% optionVideos.forEach(function(option) { %>
-                    <option value="<%= option.id %>"><%= option.titulo %></option>
-                    <% }); %>
-                </select>
-            </div>
+            
             <button type="submit" class="btn btn-primary" tabindex="5">Guardar</button>
             <a href="/examenTable" class="btn btn-secondary">Cancelar</a>
           </form>
