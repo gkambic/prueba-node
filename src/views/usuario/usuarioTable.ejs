@@ -5,6 +5,9 @@
   <title>Consulta de Usuarios</title>
   <link rel="stylesheet" href="css/tableStyle.css">
   <link rel="stylesheet" href="css/filterStyle.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.datatables.net/2.1.0/js/dataTables.min.js"></script>
 </head>
 <body>
   <%- include('../partials/navigation') %>
@@ -57,11 +60,11 @@
   </div>
 
   <div class="table-container">
-    <table>
+    <table id="usuariosTable">
       <thead>
         <% if (datos.length > 0) { %>
         <tr>
-          <% Object.keys(datos[0]).forEach(function(key) { %>
+          <% Object.keys(datos[0]).forEach(function(key, index) { %>
             <% if (key === 'userId') { %>
               <th class="hidden-column"><%= key %></th>
             <% } else { %>
@@ -93,6 +96,13 @@
 
   <%- include('../partials/footer') %>
   <script>
+    new DataTable('#usuariosTable', {
+        order: [],
+        info:false,
+        paging:false,
+        searching:false
+    });
+
     function limpiarFiltros() {
       document.querySelectorAll('#filters-form input').forEach(input => input.value = '');
       document.getElementById('filters-form').submit();

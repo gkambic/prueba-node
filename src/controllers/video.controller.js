@@ -7,9 +7,9 @@ export const renderVideos = async (req, res) => {
 };
 
 export const renderTableVideoPage = async (req, res) => {
-  const {titulo, url, watch_id, descripcion, imagen, examen } = req.body;
+  const {titulo, url, watch_id, descripcion, examen } = req.body;
 
-  let query = `select tv.id, tv.titulo, tv.url, tv.watch_id, tv.descripcion, tv.imagen, te.nombre as examen 
+  let query = `select tv.id, tv.titulo, tv.url, tv.watch_id, tv.descripcion, te.nombre as examen 
   from tbl_videos tv LEFT JOIN tbl_examenes te on tv.examen_id = te.id
   WHERE 1=1`;
 
@@ -35,11 +35,6 @@ export const renderTableVideoPage = async (req, res) => {
       params.push(`%${descripcion}%`);
     }
 
-    if (imagen) {
-      query += ' AND tv.imagen LIKE ?';
-      params.push(`%${imagen}%`);
-    }
-
     if (examen) {
       query += ' AND te.nombre LIKE ?';
       params.push(`%${examen}%`);
@@ -59,7 +54,7 @@ export const deleteVideo = async (req, res) => {
   
   export const renderTableVideoGestion = async (req, res) => {
     const [rows] = await pool.query(
-      "select tv.id, tv.titulo, tv.url, tv.watch_id, tv.descripcion, tv.imagen, te.nombre as examen from tbl_videos tv LEFT JOIN tbl_examenes te on tv.examen_id = te.id"
+      "select tv.id, tv.titulo, tv.url, tv.watch_id, tv.descripcion, te.nombre as examen from tbl_videos tv LEFT JOIN tbl_examenes te on tv.examen_id = te.id"
     );
     res.render("video/videoGestion", { datos: rows });
   };
@@ -72,28 +67,28 @@ export const deleteVideo = async (req, res) => {
   };
   
   export const createVideo = async (req, res) => {
-    const { titulo, url, descripcion, imagen, watch_id, examen_id } = req.body;
+    const { titulo, url, descripcion, watch_id, examen_id } = req.body;
 
     const examenId = examen_id ? examen_id : null;
 
     console.log(req.body);
     await pool.query(
-      "INSERT INTO tbl_videos (titulo, url, descripcion, imagen, watch_id, examen_id) VALUES (?, ?, ?, ?, ?, ?)",
-      [titulo, url, descripcion, imagen, watch_id, examenId]
+      "INSERT INTO tbl_videos (titulo, url, descripcion, watch_id, examen_id) VALUES (?, ?, ?, ?, ?, ?)",
+      [titulo, url, descripcion, watch_id, examenId]
     );
     await req.setFlash("success", "video Added Successfully");
     return res.redirect("/videoGestion");
   };
 
   export const editVideo = async (req, res) => {
-    const { id, titulo, url, descripcion, imagen, watch_id, examen_id } = req.body;
+    const { id, titulo, url, descripcion, watch_id, examen_id } = req.body;
     
     const examenId = examen_id ? examen_id : null;
 
     console.log("Este es el id", id);
     await pool.query(
-      "UPDATE tbl_videos SET titulo = ?, url = ?, descripcion = ?, imagen = ?, watch_id = ?, examen_id = ? WHERE id = ?",
-      [titulo, url, descripcion, imagen, watch_id, examenId, id]
+      "UPDATE tbl_videos SET titulo = ?, url = ?, descripcion = ?, watch_id = ?, examen_id = ? WHERE id = ?",
+      [titulo, url, descripcion, watch_id, examenId, id]
     );
     await req.setFlash("success", "video Added Successfully");
     return res.redirect("/videoGestion");
@@ -116,9 +111,9 @@ export const deleteVideo = async (req, res) => {
   };
 
   export const exportVideo = async (req, res) => {
-    const {titulo, url, watch_id, descripcion, imagen, examen } = req.body;
+    const {titulo, url, watch_id, descripcion, examen } = req.body;
 
-  let query = `select tv.titulo, tv.url, tv.watch_id, tv.descripcion, tv.imagen, te.nombre as examen 
+  let query = `select tv.titulo, tv.url, tv.watch_id, tv.descripcion, te.nombre as examen 
   from tbl_videos tv LEFT JOIN tbl_examenes te on tv.examen_id = te.id
   WHERE 1=1`;
 
@@ -142,11 +137,6 @@ export const deleteVideo = async (req, res) => {
     if (descripcion) {
       query += ' AND tv.descripcion LIKE ?';
       params.push(`%${descripcion}%`);
-    }
-
-    if (imagen) {
-      query += ' AND tv.imagen LIKE ?';
-      params.push(`%${imagen}%`);
     }
 
     if (examen) {

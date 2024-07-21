@@ -9,16 +9,37 @@ export const renderUsuarios = async (req, res) => {
 
 export const renderTableUsuarioPage = async (req, res) => {
 
-  const { desde, hasta, Nombre, Apellido, Mail, Telefono, Provincia, Ciudad, Corralon, Profesion, Antiguedad, Rol } = req.body;
+  const { desde, hasta, Nombre, Apellido, Mail, Telefono, Provincia, Ciudad, Corralon, Profesion, Antiguedad, Rol, Ingresos, Cupones, Insignias, ExamenesDesaprobados, ExamenesAprobados, ExamenesAProbadosConMas90, Videos } = req.body;
 
   console.log(req.body);
-  let query = `SELECT name as Nombre, lastname as Apellido, email as Mail, mobile as Telefono, 
-                provincia as Provincia, ciudad as Ciudad, corralon as Corralon, 
-                profesion as Profesion, antiguedad as Antiguedad, DATE_FORMAT(createdDtm, '%d-%m-%Y %H:%i:%s') as FechaCreacion, 
-                tr.role as Rol
-                from tbl_users u, tbl_roles tr 
-                where tr.roleId  = u.roleId`; 
-
+  let query = `select * from (select name as Nombre, lastname as Apellido, email as Mail, mobile as Telefono, 
+                    provincia as Provincia, ciudad as Ciudad, corralon as Corralon, 
+                    profesion as Profesion, antiguedad as Antiguedad, DATE_FORMAT(u.createdDtm, '%d-%m-%Y %H:%i:%s') as FechaCreacion, 
+                    tr.role as Rol, count(distinct tll.id ) Ingresos, count(distinct tcu.id) as Cupones, count(distinct tiu.id ) as Insignias,
+                    ex.ExamenesDesaprobados,
+                    ex.ExamenesAprobados,
+                    ex.ExamenesAprobadosConMas90,
+                    count(distinct thu.id) Videos
+                    from tbl_roles tr, tbl_users u
+                    left join tbl_last_login tll on u.userId = tll.userId 
+                    left join tbl_cupones_usuarios tcu on u.userId = tcu.id_usuario 
+                    left join tbl_insignias_usuario tiu on u.userId  = tiu.id_usuario 
+                    left join tbl_historial_usuarios thu on u.userId = thu.id_usuario 
+                    LEFT JOIN (
+                    SELECT
+                        id_usuario,
+                        COUNT(CASE WHEN aprobado = 0 THEN 1 END) AS ExamenesDesaprobados,
+                        COUNT(CASE WHEN aprobado = 1 AND puntaje <= 90 THEN 1 END) AS ExamenesAprobados,
+                        COUNT(CASE WHEN aprobado = 1 AND puntaje > 90 THEN 1 END) AS ExamenesAprobadosConMas90
+                    FROM
+                        tbl_insignias_usuario
+                    GROUP BY
+                        id_usuario
+                  ) ex ON u.userId = ex.id_usuario
+                    where tr.roleId  = u.roleId 
+                    group by name, lastname, email, mobile, provincia, ciudad, corralon, profesion, antiguedad,u.createdDtm, tr.role, ex.ExamenesDesaprobados,
+                    ex.ExamenesAprobados, ex.ExamenesAprobadosConMas90) usuarios
+                    where 1 = 1`;
   const params = [];
 
   if (desde) {
@@ -76,10 +97,25 @@ export const renderTableUsuarioPage = async (req, res) => {
   }
 
   if (Rol) {
-    query += ' AND tr.role LIKE?';
+    query += ' AND role LIKE?';
     params.push(`%${Rol}%`);
   }
+
+  if (ExamenesDesaprobados) {
+    query += ' AND ExamenesDesaprobados = ?'
+    params.push(ExamenesDesaprobados);
+  }
+
+  if (Ingresos) {
+    query += ' AND ingresos = ?'
+    params.push(Ingresos);
+  }
+
+
+
+
   console.log(query, params);
+
   const [rows] = await pool.query(query, params);
 
   res.render('usuario/usuarioTable', { datos: rows, filtros: req.body });
