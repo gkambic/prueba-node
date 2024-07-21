@@ -11,8 +11,24 @@ export const renderTableCuponPage = async (req, res) => {
   const { codigo, desde, hasta, otorgado } = req.body;
 
   let query =`select * from (
-    select c.id, c.codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento, case when tcu.id is null then 'NO' else 'SI' end otorgado
-    from tbl_cupones c left join tbl_cupones_usuarios tcu on c.id = tcu.id_usuario ) as TempTable WHERE 1 = 1`;
+    select c.id, c.codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento, case when tcu.id is null then 'NO' else 'SI' end otorgado,
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'Name', u.Name,
+            'Lastname', u.Lastname,
+            'Mobile', u.Mobile,
+            'Dni', u.Dni,
+            'Provincia', u.Provincia,
+            'Ciudad', u.Ciudad,
+            'Corralon', u.Corralon,
+            'TrabajadorContruccion', u.trabajador_contruccion ,
+            'Profesion', u.Profesion
+        )
+    ) AS Usuarios
+    from tbl_cupones c 
+    left join tbl_cupones_usuarios tcu on c.id = tcu.id_cupon 
+    LEFT JOIN tbl_users u ON tcu.id_usuario = u.userId
+    GROUP BY c.Id, c.codigo, c.vencimiento, tcu.id ) as TempTable WHERE 1 = 1`;
 
   let params = [];
 
@@ -49,7 +65,9 @@ export const deleteCupon = async (req, res) => {
 
   export const renderTableCuponGestion = async (req, res) => {
     const [rows] = await pool.query(
-      "SELECT id, codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento FROM tbl_cupones WHERE 1 = 1"
+      `select * from (
+        select c.id, c.codigo, DATE_FORMAT(vencimiento, '%d-%m-%Y %H:%i:%s') as vencimiento, case when tcu.id is null then 'NO' else 'SI' end otorgado
+        from tbl_cupones c left join tbl_cupones_usuarios tcu on c.id = tcu.id_cupon ) as TempTable WHERE 1 = 1`
     );
     res.render("cupon/cuponGestion", { datos: rows });
   };
@@ -95,6 +113,33 @@ export const deleteCupon = async (req, res) => {
     res.render("cupon/CuponEdit", {
       datos
     });
+  };
+
+  export const renderAsignarCupon = async (req, res) => {
+    const { id } = req.params;
+    const [result] = await pool.query("SELECT id, codigo, DATE_FORMAT(vencimiento, '%Y-%m-%d') as vencimiento FROM tbl_cupones WHERE id = ?", [
+      id,
+    ]);
+    const datos = result[0];
+
+    const [usuarios] = await pool.query(`select userId , concat(lastname, ', ',name) as nombre from tbl_users tu `);
+
+  console.log(datos);
+    res.render("cupon/CuponAsignar", {
+      datos,
+      optionUsuarios: usuarios,
+    });
+  };
+
+  export const asignarCupon = async (req, res) => {
+    const {id, id_usuario } = req.body;
+    
+    await pool.query(
+      "insert into tbl_cupones_usuarios (id_cupon, id_usuario) values (?,?)",
+      [id, id_usuario]
+    );
+    await req.setFlash("success", "cupon Added Successfully");
+    return res.redirect("/cuponGestion");
   };
 
   export const exportCupon = async (req, res) => {

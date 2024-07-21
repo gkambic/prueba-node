@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/header') %>
+  <title>Asignar Cupon</title>
+</head>
+<body>
+  <%- include('../partials/navigation') %>
+  <% if (datos) {%>
+  <div class="container p-4">
+    <div class="card border-secondary">
+      <div class="card-header">Asignar Cupon</div>
+      <div class="card-body bg-dark text-light">
+        <form method="POST" action="/asignarCupon">
+          <input id="id" name = "id" value="<%= datos.id %>" hidden >
+          <div class="mb-3">
+            <label for="title">Codigo</label>
+            <input name="codigo" type="text" class="form-control rounded-0" placeholder="Entry a Name" value="<%= datos.codigo %>" autofocus required>
+          </div>
+
+          <div class="mb-3">
+            <label for="usuario">Usuario</label>
+            <select name="id_usuario" class="form-select" aria-label="Default select example">
+                <option selected></option>
+                <% optionUsuarios.forEach(function(option) { %>
+                <option value="<%= option.userId %>"><%= option.nombre %></option>
+                <% }); %>
+            </select>
+           </div>
+
+          <button type="submit" class="btn btn-primary" tabindex="5">Guardar</button>
+          <a href="/cuponGestion" class="btn btn-secondary">Cancelar</a>
+        </form>
+      </div>
+    </div>
+  </div>
+  <% } %>
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -82,15 +82,56 @@
         <% } %>
       </thead>
       <tbody>
-        <% datos.forEach(function(dato) { %>
+        <% datos.forEach(function(dato, index) { %>
           <tr>
             <% Object.keys(dato).forEach(function(key) { %>
               <% if (key === 'id') { %>
                 <td class="hidden-column"><%= dato[key] %></td>
               <% } else { %>
-                <td><%= dato[key] %></td>
+                <% if (key !== 'Usuarios') { %>
+                  <td><%= dato[key] %></td>
+                <% } %>
               <% } %>
             <% }); %>
+            <% if (dato.Usuarios && dato.Usuarios.length > 0 && dato.Usuarios.some(user => user.Name || user.Lastname || user.Mobile || user.Dni || user.Provincia || user.Ciudad || user.Corralon || user.TrabajadorContruccion || user.Profesion)) { %>
+              <td><button onclick="toggleDetails(<%= index %>)">Ver Usuario</button></td>
+            <% } else { %>
+              <td></td>
+            <% } %>
+          </tr>
+          <tr class="details-row" id="details-row-<%= index %>">
+            <td colspan="12">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Lastname</th>
+                    <th>Mobile</th>
+                    <th>Dni</th>
+                    <th>Provincia</th>
+                    <th>Ciudad</th>
+                    <th>Corralon</th>
+                    <th>Trabajador Construcción</th>
+                    <th>Profesion</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% dato.Usuarios.forEach(user => { %>
+                    <tr>
+                      <td><%= user.Name %></td>
+                      <td><%= user.Lastname %></td>
+                      <td><%= user.Mobile %></td>
+                      <td><%= user.Dni %></td>
+                      <td><%= user.Provincia %></td>
+                      <td><%= user.Ciudad %></td>
+                      <td><%= user.Corralon %></td>
+                      <td><%= user.TrabajadorContruccion %></td>
+                      <td><%= user.Profesion %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </td>
           </tr>
         <% }); %>
       </tbody>
@@ -125,6 +166,11 @@
         window.URL.revokeObjectURL(url);
       })
       .catch(error => console.error('Error:', error));
+    }
+
+    function toggleDetails(index) {
+      const detailsRow = document.getElementById(`details-row-${index}`);
+      detailsRow.classList.toggle('active');
     }
   </script>
 </body>

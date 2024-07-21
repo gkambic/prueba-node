@@ -9,7 +9,9 @@ import {
     createCupon,
     renderEditCupon,
     editCupon,
-    exportCupon
+    exportCupon,
+    renderAsignarCupon,
+    asignarCupon
 } from "../controllers/cupon.controller.js";
 
 const router = Router();
@@ -31,6 +33,10 @@ router.post("/createCupon", createCupon);
 router.get("/editCupon/:id", renderEditCupon);
 
 router.post("/editCupon", editCupon);
+
+router.get("/asignarCupon/:id", renderAsignarCupon);
+
+router.post("/asignarCupon", asignarCupon);
 
 router.post("/exportCupon", exportCupon);
 

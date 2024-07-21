@@ -5,17 +5,6 @@
   <title>Consulta de Examenes</title>
   <link rel="stylesheet" href="css/tableStyle.css">
   <link rel="stylesheet" href="css/filterStyle.css">
-  <style>
-    .details-row {
-      display: none;
-    }
-    .details-row.active {
-      display: table-row;
-    }
-    .details-row td {
-      background-color: #f9f9f9;
-    }
-  </style>
 </head>
 <body>
   <%- include('../partials/navigation') %>
@@ -130,7 +119,11 @@
                 <% } %>
               <% } %>
             <% }); %>
-            <td><button onclick="toggleDetails(<%= index %>)">Ver Usuarios</button></td>
+            <% if (dato.Usuarios && dato.Usuarios.length > 0 && dato.Usuarios.some(user => user.Name || user.Lastname || user.Mobile || user.Dni || user.Provincia || user.Ciudad || user.Corralon || user.TrabajadorContruccion || user.Profesion)) { %>
+              <td><button onclick="toggleDetails(<%= index %>)">Ver Usuario</button></td>
+            <% } else { %>
+              <td></td>
+            <% } %>
           </tr>
           <tr class="details-row" id="details-row-<%= index %>">
             <td colspan="12">

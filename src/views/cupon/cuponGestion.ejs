@@ -41,6 +41,8 @@
               <% } %>
             <% }); %>
             <td>
+              <a href="/asignarCupon/<%= dato.id %>" class="<%= dato.otorgado === 'SI' ? 'btn btn-outline-secondary disabled' : 'btn btn-outline-warning ' %>" data-id="<%= dato.id %>">Asignar</a>
+              
               <a href="/editCupon/<%= dato.id %>" class="btn btn-outline-info">Editar</a>
               <a href="/deleteCupon/<%= dato.id %>" class="btn btn-outline-danger confirm-delete" data-id="<%= dato.id %>">Borrar</a>
             </td>

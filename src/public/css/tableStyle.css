@@ -38,3 +38,18 @@
     .centered {
       text-align: center;
     }
+
+    .details-row {
+      display: none;
+    }
+    .details-row.active {
+      display: table-row;
+    }
+    .details-row td {
+      background-color: #f9f9f9;
+    }
+
+    .disabled {
+      text-decoration: none;
+      opacity: 0.5;
+    }
