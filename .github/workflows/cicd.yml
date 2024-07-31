@@ -20,7 +20,7 @@ jobs:
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
-          app-name: prueba-node
+          app-name: EXPERTOS-DEL-CEMENTO-PRD
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PROD }}
           package: .       
 
