@@ -37,6 +37,7 @@ export const renderTableUsuarioPage = async (req, res) => {
                         id_usuario
                   ) ex ON u.userId = ex.id_usuario
                     where tr.roleId  = u.roleId 
+                    and tr.roleId != 1
                     group by name, lastname, email, mobile, provincia, ciudad, corralon, profesion, antiguedad,u.createdDtm, tr.role, ex.ExamenesDesaprobados,
                     ex.ExamenesAprobados, ex.ExamenesAprobadosConMas90) usuarios
                     where 1 = 1`;
@@ -109,6 +110,57 @@ export const renderTableUsuarioPage = async (req, res) => {
   if (Ingresos) {
     query += ' AND ingresos = ?'
     params.push(Ingresos);
+  }
+
+  const [rows] = await pool.query(query, params);
+
+  res.render('usuario/usuarioTable', { datos: rows, filtros: req.body });
+};
+
+export const renderTableUsuarioAdminPage = async (req, res) => {
+
+  const { desde, hasta, Nombre, Apellido, Mail, Telefono, Rol } = req.body;
+
+  let query = `select name as Nombre, lastname as Apellido, email as Mail, mobile as Telefono, 
+                     DATE_FORMAT(u.createdDtm, '%d-%m-%Y %H:%i:%s') as FechaCreacion, 
+                    tr.role as Rol
+                    from tbl_roles tr, tbl_users u
+                    where tr.roleId  = u.roleId 
+                    and tr.roleId = 1 `;
+  const params = [];
+
+  if (desde) {
+    query += ' AND createdDtm >= ?';
+    params.push(desde);
+  }
+  if (hasta) {
+    query += ' AND createdDtm <= ?';
+    params.push(hasta);
+  }
+
+  if (Nombre) {
+    query += ' AND name LIKE ?';
+    params.push(`%${Nombre}%`);
+  }
+
+  if (Apellido) {
+    query += ' AND lastname LIKE ?';
+    params.push(`%${Apellido}%`);
+  }
+
+  if (Mail) {
+    query += ' AND email LIKE ?';
+    params.push(`%${Mail}%`);
+  }
+
+  if (Telefono) {
+    query += ' AND mobile LIKE ?';
+    params.push(`%${Telefono}%`);
+  }
+
+  if (Rol) {
+    query += ' AND role LIKE?';
+    params.push(`%${Rol}%`);
   }
 
   const [rows] = await pool.query(query, params);

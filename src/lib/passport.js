@@ -31,7 +31,7 @@ passport.use(
       passReqToCallback: true,
     },
     async (req, email, password, done) => {
-      const [rows] = await pool.query("SELECT * FROM tbl_users WHERE email = ?", [
+      const [rows] = await pool.query("SELECT * FROM tbl_users WHERE roleId = 1 and email = ?", [
         email,
       ]);
 
