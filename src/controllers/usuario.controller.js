@@ -1,6 +1,7 @@
 import { pool } from "../database.js";
 import ExcelJS from "exceljs";
 import { formatDate } from "../lib/fechaHelper.js";
+import { encryptPassword } from "../lib/helpers.js";
 
 export const renderUsuarios = async (req, res) => {
   const [rows] = await pool.query("SELECT * FROM tbl_users");
@@ -11,7 +12,6 @@ export const renderTableUsuarioPage = async (req, res) => {
 
   const { desde, hasta, Nombre, Apellido, Mail, Telefono, Provincia, Ciudad, Corralon, Profesion, Antiguedad, Rol, Ingresos, Cupones, Insignias, ExamenesDesaprobados, ExamenesAprobados, ExamenesAProbadosConMas90, Videos } = req.body;
 
-  console.log(req.body);
   let query = `select * from (select name as Nombre, lastname as Apellido, email as Mail, mobile as Telefono, 
                     provincia as Provincia, ciudad as Ciudad, corralon as Corralon, 
                     profesion as Profesion, antiguedad as Antiguedad, DATE_FORMAT(u.createdDtm, '%d-%m-%Y %H:%i:%s') as FechaCreacion, 
@@ -111,11 +111,6 @@ export const renderTableUsuarioPage = async (req, res) => {
     params.push(Ingresos);
   }
 
-
-
-
-  console.log(query, params);
-
   const [rows] = await pool.query(query, params);
 
   res.render('usuario/usuarioTable', { datos: rows, filtros: req.body });
@@ -148,19 +143,24 @@ export const renderCreateUsuarioPage = async (req, res) => {
 };
 
 export const createUsuario = async (req, res) => {
-  const { nombre, url, categoria_id, video_id } = req.body;
-  console.log(req.body);
-  await pool.query(
-    "INSERT INTO tbl_users (nombre, url, categoria_id, id_video) VALUES (?, ?, ?, ?)",
-    [nombre, url, categoria_id, video_id]
-  );
-  await req.setFlash("success", "usuario Added Successfully");
-  return res.redirect("/usuarioTable");
+  const {  nombre, apellido, email, password} = req.body;
+  try {
+     const hashedPassword = await encryptPassword(password);
+    await pool.query(//'INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword]); 
+    "INSERT INTO tbl_users (name, lastname, email, password, provincia, ciudad, trabajador_contruccion, roleId, createdBy, createdDtm) VALUES (?, ?, ?, ?, '-', '-', 'No', 1, 0, sysdate())",
+    [nombre, apellido, email, hashedPassword]);
+    req.setFlash('success', 'User created successfully.');
+    res.redirect('/UsuarioGestion'); // Redirect to login page or any other page
+  } catch (err) {
+    console.log(err);
+    req.setFlash('message', 'Error creating user.');
+    res.redirect('/createUsuario'); // Redirect to register page or any other page
+  }
 };
 
 export const editUsuario = async (req, res) => {
   const { id, nombre, url, categoria_id, video_id } = req.body;
-  console.log("Este es el id", id);
+
   await pool.query(
     "UPDATE tbl_users SET nombre = ?, url = ?, categoria_id = ?, id_video = ? WHERE id = ?",
     [nombre, url, categoria_id, video_id, id]

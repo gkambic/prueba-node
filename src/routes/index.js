@@ -6,10 +6,18 @@ import cupones from "./cupon.routes.js";
 import examenes from "./examen.routes.js";
 import insignias from "./insignia.routes.js";
 import usuario from "./usuario.routes.js";
+import { isLoggedIn } from "../middlewares/protectedRoutes.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
+/* router.get("/", (req, res) => {
+    res.render("index");
+}); */
+
+router.get("/",isLoggedIn, (req, res) => {
+    res.render("index");
+});
+router.get("/index",isLoggedIn, (req, res) => {
     res.render("index");
 });
 

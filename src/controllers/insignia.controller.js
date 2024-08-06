@@ -35,7 +35,6 @@ export const renderTableInsigniaPage = async (req, res) => {
       params.push(`%${examen}%`);
     }
 
-    console.log(query);
   const [rows] = await pool.query(query, params);
   res.render("insignia/insigniaTable", { datos: rows , filtros: req.body });
 };
@@ -78,7 +77,6 @@ export const deleteInsignia = async (req, res) => {
 
   export const editInsignia = async (req, res) => {
     const { id, nombre, descripcion, imagen, examen_id } = req.body;
-    console.log(req.body);
     const examenId = examen_id ? examen_id : null;
 
     await pool.query(

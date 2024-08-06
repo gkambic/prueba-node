@@ -8,7 +8,7 @@ export const renderExamenes = async (req, res) => {
 
 export const renderTableExamenPage = async (req, res) => {
   const { nombre, url, categoria, aprobado, provincia, localidad, profesion } = req.body;
-console.log(req.body);
+
     let query = `
     SELECT
     e.id,
@@ -80,8 +80,6 @@ WHERE 1 = 1 `;
     query += ` 
     GROUP BY e.Id, e.Nombre, e.url , tc.nombre 
     ORDER BY e.Id`;
-      
-    console.log(query);
 
     const [rows] = await pool.query(query, params);
 
@@ -101,7 +99,6 @@ export const renderTableExamenGestion = async (req, res) => {
 
 export const deleteExamen = async (req, res) => {
   const { id } = req.params;
-  console.log("Este es el id a Borrar", id);
   await pool.query("DELETE FROM tbl_examenes WHERE ID = ?", [id]);
   await req.setFlash("success", `examen ${id} Removed Successfully`);
   return res.redirect("/examenGestion");
@@ -116,7 +113,6 @@ export const renderCreateExamenPage = async (req, res) => {
 
 export const createExamen = async (req, res) => {
   const { nombre, url, categoria_id } = req.body;
-  console.log(req.body);
     
   // Usar null en lugar de valores vacíos
     const categoriaId = categoria_id ? categoria_id : null;
@@ -131,7 +127,6 @@ export const createExamen = async (req, res) => {
 
 export const editExamen = async (req, res) => {
   const { id, nombre, url, categoria_id } = req.body;
-  console.log("Este es el id", id);
   await pool.query(
     "UPDATE tbl_examenes SET nombre = ?, url = ?, categoria_id = ? WHERE id = ?",
     [nombre, url, categoria_id, id]
@@ -178,8 +173,6 @@ export const exportExamen = async (req, res) => {
       query += ' AND tc.id = ?';
       params.push(categoria);
     }
-
-    console.log(query);
 
     const [rows] = await pool.query(query, params);
 

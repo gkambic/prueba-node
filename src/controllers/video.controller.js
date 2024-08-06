@@ -71,7 +71,6 @@ export const deleteVideo = async (req, res) => {
 
     const examenId = examen_id ? examen_id : null;
 
-    console.log(req.body);
     await pool.query(
       "INSERT INTO tbl_videos (titulo, url, descripcion, watch_id, examen_id) VALUES (?, ?, ?, ?, ?, ?)",
       [titulo, url, descripcion, watch_id, examenId]
@@ -85,7 +84,6 @@ export const deleteVideo = async (req, res) => {
     
     const examenId = examen_id ? examen_id : null;
 
-    console.log("Este es el id", id);
     await pool.query(
       "UPDATE tbl_videos SET titulo = ?, url = ?, descripcion = ?, watch_id = ?, examen_id = ? WHERE id = ?",
       [titulo, url, descripcion, watch_id, examenId, id]
