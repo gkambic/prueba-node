@@ -11,28 +11,29 @@ import {
     editVideo,
     exportVideo
 } from "../controllers/video.controller.js";
+import { isLoggedIn } from "../middlewares/protectedRoutes.js";
 
 const router = Router();
 
 
-router.get("/deleteVideo/:id", deleteVideo);
+router.get("/deleteVideo/:id", isLoggedIn, deleteVideo);
 
-router.get("/videoTable", renderTableVideoPage);
+router.get("/videoTable",isLoggedIn, renderTableVideoPage);
 
-router.post("/videoTable", renderTableVideoPage);
+router.post("/videoTable", isLoggedIn, renderTableVideoPage);
 
-router.get("/videoGestion", renderTableVideoGestion);
+router.get("/videoGestion", isLoggedIn, renderTableVideoGestion);
 
-router.get("/videoList", renderVideos);
+router.get("/videoList", isLoggedIn, renderVideos);
 
-router.get("/createVideo", renderCreateVideoPage);
+router.get("/createVideo", isLoggedIn, renderCreateVideoPage);
 
-router.post("/createVideo", createVideo);
+router.post("/createVideo", isLoggedIn, createVideo);
 
-router.get("/editVideo/:id", renderEditVideo);
+router.get("/editVideo/:id", isLoggedIn, renderEditVideo);
 
-router.post("/editVideo", editVideo)
+router.post("/editVideo", isLoggedIn, editVideo)
 
-router.post("/exportVideo", exportVideo);
+router.post("/exportVideo", isLoggedIn, exportVideo);
 
 export default router;

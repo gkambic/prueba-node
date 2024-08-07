@@ -15,7 +15,56 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                
+              <% if (user) { %>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Consultas
+                  </a>
+                  <ul class="dropdown-menu navbar-dark bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/usuarioTable">Usuarios</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/adminTable">Administradores</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/cuponTable">Cupones</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/examenTable">Examenes</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/insigniaTable">Insignias</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/videoTable">Videos</a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Gestion
+                  </a>
+                  <ul class="dropdown-menu navbar-dark bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/usuarioGestion">Usuarios</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/cuponGestion">Cupones</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/examenGestion">Examenes</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/insigniaGestion">Insignias</a>
+                    </li>
+                    <li class="dropdown-submenu">
+                      <a class="nav-link" href="/videoGestion">Videos</a>
+                    </li>
+                  </ul>
+                </li>
+
+<!-- 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Usuarios
@@ -80,7 +129,11 @@
                         <a class="nav-link" href="/videoTable">Consultas</a>
                       </li>
                     </ul>
+                  </li> -->
+                  <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
                   </li>
+              <% }%>
             </ul>
         </div>
     </div>

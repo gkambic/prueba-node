@@ -9,6 +9,7 @@
 <body>
 
   <%- include('../partials/navigation') %>
+  <%- include('../partials/message') %>
   <div class="container p-4">
     <div class="row">
       <div class="col-md-4 mx-auto">
@@ -22,25 +23,25 @@
           </h3>
   
           <img
-            src="/img/logo.png"
-            alt="Logo Fazt"
+            src="https://www.lomanegra.com/wp-content/uploads/2022/08/logo-loma-negra.png"
+            alt="Logo Loma Negra"
             class="card-img-top mx-auto m-2 rounded-circle w-50"
           />
           <div class="card-body">
             <!-- Email -->
             <label for="username" class="fw-light fs-6 mb-2">
-              Write a Email:
+              Escribí tu Email:
             </label>
             <input
               type="text"
               name="email"
-              placeholder="youremail@mail.com"
+              placeholder="tuemail@mail.com"
               class="form-control mb-3"
               autofocus
             />
   
             <label for="password">
-              Write your Password:
+              Escribí tu Password:
             </label>
             <div class="form-group">
               <input
@@ -56,13 +57,6 @@
           </div>
         </form>
   
-        <!-- Link -->
-        <p class="fs-5 text-center mt-3 text-light">
-          Don't have an Account?
-          <a href="/signup" class="text-info">
-            Signup
-          </a>
-        </p>
       </div>
     </div>
   </div>

@@ -2,18 +2,18 @@ import express from "express";
 import path from "path";
 import morgan from "morgan";
 import routes from "./routes/index.js";
-import passport from "passport";
 import session from "express-session";
 import expressMySQLSession from "express-mysql-session";
-import { promiseConnectFlash } from "async-connect-flash";
 
 import { SECRET, database } from "./config.js";
 import config from "./config.js";
 import {fileURLToPath} from "url";
 import { pool } from "./database.js";
+import passport from "passport";
+import { promiseConnectFlash } from "async-connect-flash";
+const app = express();
 import "./lib/passport.js";
 
-const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const MySQLStore = expressMySQLSession(session);
 // Settings
@@ -25,15 +25,6 @@ app.set("view engine", "ejs");
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
 
-// global variables
-app.use((req, res, next) => {
-  console.log(config.APPID)
-  app.locals.APPID = config.APPID;
-  next();
-});
-
-
-console.log(database);
 app.use(
   session({
     secret: SECRET,
@@ -42,10 +33,21 @@ app.use(
     store: new MySQLStore({}, pool),
   })
 );
-
 app.use(promiseConnectFlash());
+//app.use(promiseConnectFlash());
 app.use(passport.initialize());
 app.use(passport.session());
+
+// global variables
+app.use(async (req, res, next) => {
+  app.locals.success = await req.getFlash("success");
+  app.locals.error = await req.getFlash("error");
+  app.locals.user = req.user;
+  app.locals.APPID = config.APPID;
+  next();
+});
+
+
 // Routes
 app.use(routes);
 

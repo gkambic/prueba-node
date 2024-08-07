@@ -2,7 +2,25 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 
 import { pool } from "../database.js";
-import { matchPassword } from "./helpers.js";
+import { encryptPassword, matchPassword } from "./helpers.js";
+
+passport.use('local', new LocalStrategy({
+  usernameField: 'username',
+  passwordField: 'password',
+  passReqToCallback: true
+}, async (req, res) => {
+  const { username, password } = req.body;
+  try {
+
+    /* const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword]); */
+    req.flash('success', 'User created successfully.');
+    res.redirect('/UsuarioGestion'); // Redirect to login page or any other page
+  } catch (err) {
+    req.flash('message', 'Error creating user.');
+    res.redirect('/createUsuario'); // Redirect to register page or any other page
+  }
+}));
 
 passport.use(
   "local.signin",
@@ -13,7 +31,7 @@ passport.use(
       passReqToCallback: true,
     },
     async (req, email, password, done) => {
-      const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [
+      const [rows] = await pool.query("SELECT * FROM tbl_users WHERE roleId = 1 and email = ?", [
         email,
       ]);
 
@@ -23,6 +41,7 @@ passport.use(
       }
 
       const user = rows[0];
+
       const validPassword = await matchPassword(password, user.password);
 
       if (!validPassword) {
@@ -36,10 +55,12 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user.userId);
 });
 
 passport.deserializeUser(async (id, done) => {
-  const [rows] = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
+  const [rows] = await pool.query("SELECT * FROM tbl_users WHERE userId = ?", [id]);
   done(null, rows[0]);
 });
+
+export default passport;

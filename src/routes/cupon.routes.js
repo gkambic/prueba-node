@@ -13,31 +13,32 @@ import {
     renderAsignarCupon,
     asignarCupon
 } from "../controllers/cupon.controller.js";
+import { isLoggedIn } from "../middlewares/protectedRoutes.js";
 
 const router = Router();
 
-router.get("/deleteCupon/:id", deleteCupon);
+router.get("/deleteCupon/:id",isLoggedIn, deleteCupon);
 
-router.get("/cuponTable", renderTableCuponPage);
+router.get("/cuponTable",isLoggedIn, renderTableCuponPage);
 
-router.post("/cuponTable", renderTableCuponPage);
+router.post("/cuponTable",isLoggedIn, renderTableCuponPage);
 
-router.get("/cuponGestion", renderTableCuponGestion);
+router.get("/cuponGestion",isLoggedIn, renderTableCuponGestion);
 
-router.get("/cuponList", renderCupones);
+router.get("/cuponList",isLoggedIn, renderCupones);
 
-router.get("/createCupon", renderCreateCuponPage);
+router.get("/createCupon",isLoggedIn, renderCreateCuponPage);
 
-router.post("/createCupon", createCupon);
+router.post("/createCupon",isLoggedIn, createCupon);
 
-router.get("/editCupon/:id", renderEditCupon);
+router.get("/editCupon/:id",isLoggedIn, renderEditCupon);
 
-router.post("/editCupon", editCupon);
+router.post("/editCupon",isLoggedIn, editCupon);
 
-router.get("/asignarCupon/:id", renderAsignarCupon);
+router.get("/asignarCupon/:id",isLoggedIn, renderAsignarCupon);
 
-router.post("/asignarCupon", asignarCupon);
+router.post("/asignarCupon",isLoggedIn, asignarCupon);
 
-router.post("/exportCupon", exportCupon);
+router.post("/exportCupon",isLoggedIn, exportCupon);
 
 export default router;

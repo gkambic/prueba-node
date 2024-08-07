@@ -51,7 +51,7 @@
             <% } %>
           <% }); %>
         </tr>
-        
+        <% } %>
       </thead>
       <tbody>
         <% datos.forEach(function(dato) { %>
@@ -76,7 +76,7 @@
       document.getElementById('filters-form').submit();
     }
 
-    function exportarDatos() {
+    /* function exportarDatos() {
       const form = document.getElementById('filters-form');
       const formData = new FormData(form);
 
@@ -96,7 +96,7 @@
         window.URL.revokeObjectURL(url);
       })
       .catch(error => console.error('Error:', error));
-    }
+    } */
   </script>
 </body>
 </html>

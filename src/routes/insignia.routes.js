@@ -11,28 +11,29 @@ import {
     editInsignia,
     exportInsignia
 } from "../controllers/insignia.controller.js";
+import { isLoggedIn } from "../middlewares/protectedRoutes.js";
 
 const router = Router();
 
 
-router.get("/deleteInsignia/:id", deleteInsignia);
+router.get("/deleteInsignia/:id",isLoggedIn, deleteInsignia);
 
-router.get("/insigniaTable", renderTableInsigniaPage);
+router.get("/insigniaTable",isLoggedIn, renderTableInsigniaPage);
 
-router.post("/insigniaTable", renderTableInsigniaPage);
+router.post("/insigniaTable",isLoggedIn, renderTableInsigniaPage);
 
-router.get("/insigniaGestion", renderTableInsigniaGestion);
+router.get("/insigniaGestion",isLoggedIn, renderTableInsigniaGestion);
 
-router.get("/insigniaList", renderInsignias);
+router.get("/insigniaList",isLoggedIn, renderInsignias);
 
-router.get("/createInsignia", renderCreateInsigniaPage);
+router.get("/createInsignia",isLoggedIn, renderCreateInsigniaPage);
 
-router.post("/createInsignia", createInsignia);
+router.post("/createInsignia",isLoggedIn, createInsignia);
 
-router.get("/editInsignia/:id", renderEditInsignia);
+router.get("/editInsignia/:id",isLoggedIn, renderEditInsignia);
 
-router.post("/editInsignia", editInsignia)
+router.post("/editInsignia",isLoggedIn, editInsignia)
 
-router.post("/exportInsignia", exportInsignia);
+router.post("/exportInsignia",isLoggedIn, exportInsignia);
 
 export default router;

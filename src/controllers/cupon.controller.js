@@ -83,7 +83,7 @@ export const deleteCupon = async (req, res) => {
   
   export const createCupon = async (req, res) => {
     const { codigo, vencimiento } = req.body;
-    console.log(req.body);
+
     await pool.query(
       "INSERT INTO tbl_cupones (codigo, vencimiento) VALUES (?, ?)",
       [codigo, vencimiento]
@@ -109,7 +109,6 @@ export const deleteCupon = async (req, res) => {
       id,
     ]);
     const datos = result[0];
-  console.log(datos);
     res.render("cupon/CuponEdit", {
       datos
     });
@@ -124,7 +123,6 @@ export const deleteCupon = async (req, res) => {
 
     const [usuarios] = await pool.query(`select userId , concat(lastname, ', ',name) as nombre from tbl_users tu `);
 
-  console.log(datos);
     res.render("cupon/CuponAsignar", {
       datos,
       optionUsuarios: usuarios,
@@ -168,8 +166,6 @@ export const deleteCupon = async (req, res) => {
         query += ' AND TempTable.otorgado = ?';
         params.push(otorgado === '1' ? 'SI' : 'NO');
       }
-  
-      console.log(query);
   
       const [rows] = await pool.query(query, params);
   

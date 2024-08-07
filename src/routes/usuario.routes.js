@@ -1,4 +1,6 @@
 import { Router } from "express";
+import passport from "passport";
+//import { pool } from "../database.js";
 
 import {
     renderUsuarios,
@@ -9,30 +11,35 @@ import {
     createUsuario,
     renderEditUsuario,
     editUsuario,
-    exportUsuario
+    exportUsuario,
+    renderTableUsuarioAdminPage
 } from "../controllers/usuario.controller.js";
+import { encryptPassword } from "../lib/helpers.js";
+import { isLoggedIn } from "../middlewares/protectedRoutes.js";
 
 const router = Router();
 
 
-router.get("/deleteUsuario/:id", deleteUsuario);
+router.get("/deleteUsuario/:id",isLoggedIn, deleteUsuario);
 
-router.get("/usuarioTable", renderTableUsuarioPage);
+router.get("/usuarioTable",isLoggedIn, renderTableUsuarioPage);
 
-router.post("/usuarioTable", renderTableUsuarioPage);
+router.get("/adminTable",isLoggedIn, renderTableUsuarioAdminPage);
 
-router.get("/usuarioGestion", renderTableUsuarioGestion);
+router.post("/usuarioTable",isLoggedIn, renderTableUsuarioPage);
 
-router.get("/usuarioList", renderUsuarios);
+router.get("/usuarioGestion",isLoggedIn, renderTableUsuarioGestion);
 
-router.get("/createUsuario", renderCreateUsuarioPage);
+router.get("/usuarioList",isLoggedIn, renderUsuarios);
 
-router.post("/createUsuario", createUsuario);
+router.get("/createUsuario",isLoggedIn, renderCreateUsuarioPage);
 
-router.get("/editUsuario/:id", renderEditUsuario);
+router.post("/createUsuario",isLoggedIn, createUsuario);
 
-router.post("/editUsuario", editUsuario)
+router.get("/editUsuario/:id",isLoggedIn, renderEditUsuario);
 
-router.post("/exportUsuario", exportUsuario);
+router.post("/editUsuario",isLoggedIn, editUsuario)
+
+router.post("/exportUsuario",isLoggedIn, exportUsuario);
 
 export default router;

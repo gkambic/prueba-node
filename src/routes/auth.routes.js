@@ -1,24 +1,19 @@
 import { Router } from "express";
 import {
-  renderSignUp,
-  signUp,
   renderSignIn,
   signIn,
   logout,
 } from "../controllers/auth.controller.js";
+import { isLoggedIn, isNotLoggedIn } from "../middlewares/protectedRoutes.js";
 import { validator } from "../middlewares/validator.middleware.js";
-import { signinSchema, signupSchema } from "../schemas/auth.schema.js";
+import { signinSchema } from "../schemas/auth.schema.js";
 
 const router = Router();
 
-// SIGNUP
-router.get("/signup", renderSignUp);
-router.post("/signup", validator(signupSchema), signUp);
-
 // SINGIN
-router.get("/signin", renderSignIn);
-router.post("/signin", validator(signinSchema), signIn);
+router.get("/signin",isNotLoggedIn, renderSignIn);
+router.post("/signin",isNotLoggedIn, signIn);
 
-router.get("/logout", logout);
+router.get("/logout", isLoggedIn, logout);
 
 export default router;
