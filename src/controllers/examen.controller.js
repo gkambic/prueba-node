@@ -8,7 +8,7 @@ export const renderExamenes = async (req, res) => {
 
 export const renderTableExamenPage = async (req, res) => {
   const { desde, hasta, nombre, url, categoria, aprobado, provincia, localidad, profesion } = req.body;
-console.log(req.body);
+
     let query = `
     SELECT
     e.id,
