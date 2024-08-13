@@ -166,26 +166,78 @@ export const renderEditExamen = async (req, res) => {
 };
 
 export const exportExamen = async (req, res) => {
-  const { nombre, url, categoria } = req.body;
+  const { desde, hasta, nombre, url, categoria, aprobado, provincia, localidad, profesion } = req.body;
   
     let query = `
-    SELECT te.nombre, te.url, tc.nombre AS categoria
-    FROM tbl_examenes te
-    LEFT JOIN tbl_categorias tc ON te.categoria_id = tc.id
-    WHERE 1 = 1`;
+    SELECT
+      e.id,
+      e.nombre,
+      e.url,
+      tc.nombre as categoria,
+      u.Name,
+      u.Lastname,
+      CASE iu.Aprobado WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' ELSE null end Aprobado,
+      iu.Puntaje,
+      u.Mobile,
+      u.Provincia,
+      u.Ciudad,
+      u.Corralon,
+      u.trabajador_contruccion,
+      u.Profesion,
+      DATE_FORMAT(iu.fecha_aprobacion , '%d-%m-%Y %H:%i:%s') 'Fecha Aprobacion'
+  FROM tbl_categorias tc 
+  inner join tbl_examenes e on e.categoria_id  = tc.id 
+  LEFT JOIN tbl_insignias i ON i.examen_id = e.Id
+  LEFT JOIN tbl_insignias_usuario iu ON i.Id = iu.id_insignia 
+  inner JOIN tbl_users u ON iu.id_usuario = u.userId 
+  WHERE 1 = 1`;
     let params = [];
 
+    if (desde) {
+      query += ' AND iu.fecha_aprobacion >= ?';
+      params.push(desde);
+    }
+    if (hasta) {
+      query += ' AND iu.fecha_aprobacion <= ?';
+      params.push(hasta);
+    }
+
     if (nombre) {
-      query += ' AND te.nombre LIKE ?';
+      query += ' AND e.nombre LIKE ?';
       params.push(`%${nombre}%`);
     }
     if (url) {
-      query += ' AND te.url LIKE ?';
+      query += ' AND e.url LIKE ?';
       params.push(`%${url}%`);
     }
+    
     if (categoria) {
       query += ' AND tc.id = ?';
       params.push(categoria);
+    }
+
+    if (aprobado !== undefined && aprobado !== '') {
+      if (aprobado==='2') {
+        query += ' AND iu.puntaje >=90';
+      } else {
+        query += ' AND iu.Aprobado = ?';
+        params.push(aprobado);
+      }
+    }
+    
+    if (provincia) {
+      query += " AND u.Provincia LIKE ?";
+      params.push(`%${provincia}%`);
+    }
+
+    if (localidad) {
+      query += " AND u.Ciudad LIKE ?";
+      params.push(`%${localidad}%`);
+    }
+
+    if (profesion) {
+      query += " AND u.Profesion LIKE ?";
+      params.push(`%${profesion}%`);
     }
 
     const [rows] = await pool.query(query, params);
