@@ -7,8 +7,8 @@ export const renderExamenes = async (req, res) => {
 };
 
 export const renderTableExamenPage = async (req, res) => {
-  const { nombre, url, categoria, aprobado, provincia, localidad, profesion } = req.body;
-
+  const { desde, hasta, nombre, url, categoria, aprobado, provincia, localidad, profesion } = req.body;
+console.log(req.body);
     let query = `
     SELECT
     e.id,
@@ -16,20 +16,25 @@ export const renderTableExamenPage = async (req, res) => {
     e.url,
     tc.nombre as categoria,
     JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'Name', u.Name,
-            'Lastname', u.Lastname,
-            'Aprobado', case iu.Aprobado when 1 then 'SI' when 0 then 'NO' else null end,
-            'Puntaje', iu.Puntaje,
-            'Mobile', u.Mobile,
-            'Dni', u.Dni,
-            'Provincia', u.Provincia,
-            'Ciudad', u.Ciudad,
-            'Corralon', u.Corralon,
-            'TrabajadorContruccion', u.trabajador_contruccion ,
-            'Profesion', u.Profesion
-        )
-    ) AS Usuarios
+      CASE 
+          WHEN u.userId IS NOT NULL THEN 
+              JSON_OBJECT(
+                  'Name', u.Name,
+                  'Lastname', u.Lastname,
+                  'Aprobado', CASE iu.Aprobado WHEN 1 THEN 'SI' WHEN 0 THEN 'NO' ELSE null END,
+                  'Puntaje', iu.Puntaje,
+                  'Mobile', u.Mobile,
+                  'Dni', u.Dni,
+                  'Provincia', u.Provincia,
+                  'Ciudad', u.Ciudad,
+                  'Corralon', u.Corralon,
+                  'TrabajadorContruccion', u.trabajador_contruccion,
+                  'Profesion', u.Profesion,
+                  'FechaAprobacion', DATE_FORMAT(iu.fecha_aprobacion , '%d-%m-%Y %H:%i:%s')
+              )
+          ELSE NULL
+      END
+  ) AS Usuarios
 FROM tbl_categorias tc 
 inner join tbl_examenes e on e.categoria_id  = tc.id 
 LEFT JOIN tbl_insignias i ON i.examen_id = e.Id
@@ -38,6 +43,15 @@ LEFT JOIN tbl_users u ON iu.id_usuario = u.userId
 WHERE 1 = 1 `;
 
     let params = [];
+
+    if (desde) {
+      query += ' AND iu.fecha_aprobacion >= ?';
+      params.push(desde);
+    }
+    if (hasta) {
+      query += ' AND iu.fecha_aprobacion <= ?';
+      params.push(hasta);
+    }
 
     if (nombre) {
       query += ' AND e.nombre LIKE ?';
