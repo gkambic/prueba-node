@@ -1,4 +1,4 @@
-import { pool } from "../database.js";
+/* import { pool } from "../database.js";
 import ExcelJS  from "exceljs";
 
 export const renderVideos = async (req, res) => {
@@ -192,4 +192,4 @@ export const deleteVideo = async (req, res) => {
       await workbook.xlsx.write(res);
       res.end();
   };
-  
+   */

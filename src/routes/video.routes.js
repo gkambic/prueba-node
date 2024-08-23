@@ -1,4 +1,4 @@
-import { Router } from "express";
+/* import { Router } from "express";
 
 import {
     renderVideos,
@@ -37,3 +37,4 @@ router.post("/editVideo", isLoggedIn, editVideo)
 router.post("/exportVideo", isLoggedIn, exportVideo);
 
 export default router;
+ */

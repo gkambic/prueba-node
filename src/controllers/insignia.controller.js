@@ -1,4 +1,4 @@
-import { pool } from "../database.js";
+/* import { pool } from "../database.js";
 import ExcelJS  from "exceljs";
 
 export const renderInsignias = async (req, res) => {
@@ -179,4 +179,4 @@ export const deleteInsignia = async (req, res) => {
   
       await workbook.xlsx.write(res);
       res.end();
-  };
+  }; */

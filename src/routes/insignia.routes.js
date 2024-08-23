@@ -1,4 +1,4 @@
-import { Router } from "express";
+/* import { Router } from "express";
 
 import {
     renderInsignias,
@@ -37,3 +37,4 @@ router.post("/editInsignia",isLoggedIn, editInsignia)
 router.post("/exportInsignia",isLoggedIn, exportInsignia);
 
 export default router;
+ */
