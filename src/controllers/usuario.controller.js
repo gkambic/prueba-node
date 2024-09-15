@@ -211,31 +211,30 @@ export const createUsuario = async (req, res) => {
 };
 
 export const editUsuario = async (req, res) => {
-  const { id, nombre, url, categoria_id, video_id } = req.body;
-
+  console.log("editUsuario1", req.body);
+  const { userId, nombre, email, apellido, roleId , mobile, provincia, ciudad, Corralon, profesion, antiguedad } = req.body;
+console.log(req.body);
   await pool.query(
-    "UPDATE tbl_users SET nombre = ?, url = ?, categoria_id = ?, id_video = ? WHERE id = ?",
-    [nombre, url, categoria_id, video_id, id]
+    "UPDATE tbl_users SET name = ?, email = ?, lastname = ?, roleId = ?, mobile = ?, provincia=?, ciudad=?, Corralon=?, profesion=?, antiguedad=?  WHERE userid = ?",
+    [nombre, email, apellido, roleId , mobile, provincia, ciudad, Corralon, profesion, antiguedad, userId]
   );
   await req.setFlash("success", "usuario Added Successfully");
-  return res.redirect("/usuarioTable");
+  return res.redirect("/usuarioGestion");
 };
 
 export const renderEditUsuario = async (req, res) => {
   const { id } = req.params;
+  console.log(req.params);
   const [result] = await pool.query("SELECT * FROM tbl_users WHERE userid = ?", [
     id,
   ]);
   const datos = result[0];
 
-  // Consulta para obtener las opciones de categoría y videos
-  const [categorias] = await pool.query("SELECT * FROM tbl_categorias");
-  const [videos] = await pool.query("SELECT * FROM tbl_videos");
+  const [roles] = await pool.query("SELECT * FROM tbl_roles");
 
   res.render("usuario/UsuarioEdit", {
     datos,
-    optionsCategory: categorias,
-    optionVideos: videos,
+    optionsRoles: roles,
   });
 };
 

@@ -102,7 +102,11 @@
     new DataTable('#usuariosTable', {
         order: [],
         info:false,
-        paging:false,
+        bFilter: false,
+        bLengthChange: false, // HIDE SHOW ENTERIES
+        responsive: true,
+        pageLength: 7,
+        paging:true,
         searching:false
     });
 

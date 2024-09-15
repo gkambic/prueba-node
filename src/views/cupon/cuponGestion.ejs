@@ -20,6 +20,7 @@
   <div class="table-container">
     <table>
       <thead>
+        <% if (datos.length > 0) { %>
         <tr>
           <% Object.keys(datos[0]).forEach(function(key) { %>
             <% if (key === 'id') { %>
@@ -29,6 +30,11 @@
             <% } %>
           <% }); %>
         </tr>
+        <% } else { %>
+          <tr>
+            <th class="centered" colspan="10">No se encontraron registros</th>
+          </tr>
+        <% } %>
       </thead>
       <tbody>
         <% datos.forEach(function(dato) { %>

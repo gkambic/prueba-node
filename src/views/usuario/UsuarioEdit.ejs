@@ -12,37 +12,61 @@
       <div class="card-header">Editar Registro</div>
       <div class="card-body bg-dark text-light">
         <form method="POST" action="/editUsuario">
-          <input id="id" name = "id" value="<%= datos.id %>" hidden >
+          <input id="userId" name = "userId" value="<%= datos.userId %>" hidden >
+          <div class="mb-3">
+            <label for="rol">Rol</label>
+            <select name="roleId" class="form-select" aria-label="Default select example">
+              <option disabled>Open this select menu</option>
+              <% optionsRoles.forEach(function(option) { %>
+                <option value="<%= option.roleId %>" <%= datos.roleId == option.roleId ? 'selected' : '' %>><%= option.role %></option>
+              <% }); %>
+            </select>
+          </div>
+
           <div class="mb-3">
             <label for="title">Nombre</label>
-            <input name="nombre" type="text" class="form-control rounded-0" placeholder="Entry a Name" value="<%= datos.nombre %>" autofocus required>
+            <input name="nombre" type="text" class="form-control rounded-0" placeholder="Nombre" value="<%= datos.name %>" autofocus required>
           </div>
 
           <div class="mb-3">
-            <label for="title">Url</label>
-            <input name="url" type="text" class="form-control rounded-0" placeholder="url" value="<%= datos.url %>" autofocus required>
+            <label for="title">Apellido</label>
+            <input name="apellido" type="text" class="form-control rounded-0" placeholder="Apellido" value="<%= datos.lastname %>" autofocus required>
           </div>
 
           <div class="mb-3">
-            <label for="category">Category</label>
-            <select name="categoria_id" class="form-select" aria-label="Default select example">
-              <option disabled>Open this select menu</option>
-              <% optionsCategory.forEach(function(option) { %>
-                <option value="<%= option.id %>" <%= datos.categoria_id == option.id ? 'selected' : '' %>><%= option.nombre %></option>
-              <% }); %>
-            </select>
+            <label for="title">E-Mail</label>
+            <input name="email" type="text" class="form-control rounded-0" placeholder="Mail" value="<%= datos.email %>" autofocus required>
           </div>
 
           <div class="mb-3">
-            <label for="video">Video</label>
-            <select name="video_id" class="form-select" aria-label="Default select example">
-              <option disabled>Open this select menu</option>
-              <% optionVideos.forEach(function(option) { %>
-                <option value="<%= option.id %>" <%= datos.video_id == option.id ? 'selected' : '' %>><%= option.titulo %></option>
-              <% }); %>
-            </select>
+            <label for="title">Telefono</label>
+            <input name="mobile" type="text" class="form-control rounded-0" placeholder="Telefono" value="<%= datos.mobile %>" autofocus required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="title">Provincia</label>
+            <input name="provincia" type="text" class="form-control rounded-0" placeholder="Provincia" value="<%= datos.provincia %>" autofocus required>
           </div>
 
+          <div class="mb-3">
+            <label for="title">Ciudad</label>
+            <input name="ciudad" type="text" class="form-control rounded-0" placeholder="Ciudad" value="<%= datos.ciudad %>" autofocus required>
+          </div>
+
+          <div class="mb-3">
+            <label for="title">Corralon</label>
+            <input name="Corralon" type="text" class="form-control rounded-0" placeholder="Corralon" value="<%= datos.corralon %>" autofocus required>
+          </div>
+
+          <div class="mb-3">
+            <label for="title">Profesion</label>
+            <input name="profesion" type="text" class="form-control rounded-0" placeholder="Profesion" value="<%= datos.profesion %>" autofocus required>
+          </div>
+
+          <div class="mb-3">
+            <label for="title">Antigüedad</label>
+            <input name="antiguedad" type="text" class="form-control rounded-0" placeholder="Antiguedad" value="<%= datos.antiguedad %>" autofocus required>
+          </div>
           <button type="submit" class="btn btn-primary" tabindex="5">Guardar</button>
           <a href="/usuarioGestion" class="btn btn-secondary">Cancelar</a>
         </form>

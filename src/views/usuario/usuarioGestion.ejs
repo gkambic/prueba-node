@@ -4,6 +4,13 @@
   <%- include('../partials/header') %>
   <title>Gestion de Usuarios</title>
   <link rel="stylesheet" href="css/tableStyle.css">
+<!--   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+ -->
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.1.0/js/dataTables.min.js"></script>
 </head>
 <body>
   <%- include('../partials/navigation') %>
@@ -13,7 +20,7 @@
 
   <a href="/createUsuario" class="btn btn-outline-primary mt-4 a-margin">Nuevo</a>
   <div class="table-container">
-    <table>
+    <table id="usuarioGestion">
       <thead>
         <tr>
           <% Object.keys(datos[0]).forEach(function(key) { %>
@@ -23,6 +30,7 @@
               <th><%= key %></th>
             <% } %>
           <% }); %>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -36,8 +44,8 @@
               <% } %>
             <% }); %>
             <td>
-             <!--  <a href="/editUsuario/<%= dato.userid %>" class="btn btn-outline-info">Editar</a> -->
               <a href="/deleteUsuario/<%= dato.userid %>" class="btn btn-outline-danger">Borrar</a>
+              <a href="/editUsuario/<%= dato.userid %>" class="btn btn-outline-info">Editar</a>
             </td>
           </tr>
         <% }); %>
@@ -47,5 +55,17 @@
   </div>
 
   <%- include('../partials/footer') %>
+  <script> 
+new DataTable('#usuarioGestion', {
+        order: [],
+        info:false,
+        bFilter: false,
+        bLengthChange: false, // HIDE SHOW ENTERIES
+        responsive: true,
+        pageLength: 7,
+        paging:true,
+        searching:false
+    });
+  </script>
 </body>
 </html>
